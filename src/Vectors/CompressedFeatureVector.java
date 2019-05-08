@@ -1,6 +1,7 @@
 package Vectors;
 import java.util.HashMap;
 import java.util.Map;
+import java.lang.Math;
 
 public class CompressedFeatureVector implements FeatureVector {
 
@@ -28,12 +29,12 @@ public class CompressedFeatureVector implements FeatureVector {
     }
 
     @Override
-    public double cosineSimilarity(FeatureVector other) {
-        return 0;
+    public FeatureVector add(CompressedFeatureVector other) {
+        return null;
     }
 
     @Override
-    public FeatureVector add(FeatureVector other) {
+    public FeatureVector add(SparseFeatureVector other) {
         return null;
     }
 
@@ -48,7 +49,12 @@ public class CompressedFeatureVector implements FeatureVector {
     }
 
     @Override
-    public FeatureVector subtract(FeatureVector other) {
+    public FeatureVector subtract(CompressedFeatureVector other) {
+        return null;
+    }
+
+    @Override
+    public FeatureVector subtract(SparseFeatureVector other) {
         return null;
     }
 
@@ -62,14 +68,33 @@ public class CompressedFeatureVector implements FeatureVector {
         return null;
     }
 
-    @Override
     public FeatureVector multiply(FeatureVector other) {
-        return null;
+        HashMap<Integer, Double> updatedIndexMap = new HashMap<>();
+        for (Map.Entry<Integer, Double> pair : indexMap.entrySet()) {
+            int index = pair.getKey();
+            double val = pair.getValue();
+            updatedIndexMap.put(index, val * other.get(index));
+        }
+        return new CompressedFeatureVector(length, updatedIndexMap);
+    }
+
+    @Override
+    public FeatureVector multiply(CompressedFeatureVector other) {
+        return multiply((FeatureVector) other);
+    }
+
+    @Override
+    public FeatureVector multiply(SparseFeatureVector other) {
+        return multiply((FeatureVector) other);
     }
 
     @Override
     public FeatureVector multiply(int scalar) {
-        return null;
+        HashMap<Integer, Double> updatedIndexMap = new HashMap<>();
+        for (Map.Entry<Integer, Double> pair: indexMap.entrySet()) {
+            updatedIndexMap.put(pair.getKey(), pair.getValue() * scalar);
+        }
+        return new CompressedFeatureVector(length, updatedIndexMap);
     }
 
     @Override
@@ -78,7 +103,12 @@ public class CompressedFeatureVector implements FeatureVector {
     }
 
     @Override
-    public FeatureVector divide(FeatureVector other) {
+    public FeatureVector divide(CompressedFeatureVector other) {
+        return null;
+    }
+
+    @Override
+    public FeatureVector divide(SparseFeatureVector other) {
         return null;
     }
 
@@ -94,26 +124,63 @@ public class CompressedFeatureVector implements FeatureVector {
 
     @Override
     public FeatureVector pow(int scalar) {
-        return null;
+        return pow((float) scalar);
     }
 
     @Override
     public FeatureVector pow(double scalar) {
-        return null;
+        HashMap<Integer, Double> updatedIndexMap = new HashMap<>();
+        for (Map.Entry<Integer, Double> pair : indexMap.entrySet()) {
+            updatedIndexMap.put(pair.getKey(), Math.pow(pair.getValue(), scalar));
+        }
+        return new CompressedFeatureVector(length, updatedIndexMap);
+    }
+
+    @Override
+    public double sum() {
+        double sum = 0.0;
+        for (double val : indexMap.values()) {
+            sum += val;
+        }
+        return sum;
+    }
+
+    @Override
+    public double product() {
+        double prod = 0.0;
+        for (double val : indexMap.values()) {
+            prod *= val;
+        }
+        return prod;
+    }
+
+    @Override
+    public int getLength() {
+        return length;
     }
 
     @Override
     public double get(int index) {
-        return 0;
+        if (indexMap.containsKey(index)) {
+            return indexMap.get(index);
+        }
+        return 0.0;
     }
 
     @Override
-    public void set() {
-
+    public void set(int index, double val) {
+        if (indexMap.containsKey(index))
+            indexMap.put(index, val);
+        else
+            indexMap.put(index, indexMap.get(index) + val);
     }
 
     @Override
     public FeatureVector changeState() {
+        return sparsify();
+    }
+
+    public SparseFeatureVector sparsify() {
         return null;
     }
 

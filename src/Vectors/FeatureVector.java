@@ -66,7 +66,7 @@ interface FeatureVector {
 
     double get(int index);
 
-    void set();
+    void set(int index, double val);
 
     FeatureVector changeState();
 
