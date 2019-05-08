@@ -12,7 +12,12 @@ public class SparseFeatureVector implements FeatureVector {
     }
 
     @Override
-    public FeatureVector add(FeatureVector other) {
+    public FeatureVector add(CompressedFeatureVector other) {
+        return null;
+    }
+
+    @Override
+    public FeatureVector add(SparseFeatureVector other) {
         return null;
     }
 
@@ -27,7 +32,12 @@ public class SparseFeatureVector implements FeatureVector {
     }
 
     @Override
-    public FeatureVector subtract(FeatureVector other) {
+    public FeatureVector subtract(CompressedFeatureVector other) {
+        return null;
+    }
+
+    @Override
+    public FeatureVector subtract(SparseFeatureVector other) {
         return null;
     }
 
@@ -42,7 +52,12 @@ public class SparseFeatureVector implements FeatureVector {
     }
 
     @Override
-    public FeatureVector multiply(FeatureVector other) {
+    public FeatureVector multiply(CompressedFeatureVector other) {
+        return null;
+    }
+
+    @Override
+    public FeatureVector multiply(SparseFeatureVector other) {
         return null;
     }
 
@@ -57,7 +72,12 @@ public class SparseFeatureVector implements FeatureVector {
     }
 
     @Override
-    public FeatureVector divide(FeatureVector other) {
+    public FeatureVector divide(CompressedFeatureVector other) {
+        return null;
+    }
+
+    @Override
+    public FeatureVector divide(SparseFeatureVector other) {
         return null;
     }
 
@@ -82,12 +102,27 @@ public class SparseFeatureVector implements FeatureVector {
     }
 
     @Override
-    public double get() {
+    public double sum() {
         return 0;
     }
 
     @Override
-    public void set() {
+    public double product() {
+        return 0;
+    }
+
+    @Override
+    public int getLength() {
+        return 0;
+    }
+
+    @Override
+    public double get(int index) {
+        return 0;
+    }
+
+    @Override
+    public void set(int index, double val) {
 
     }
 
@@ -99,5 +134,10 @@ public class SparseFeatureVector implements FeatureVector {
     @Override
     public boolean isCompressed() {
         return false;
+    }
+
+    @Override
+    public void update(FeatureVector other) {
+
     }
 }
