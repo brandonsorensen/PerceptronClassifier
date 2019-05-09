@@ -76,35 +76,13 @@ public class CompressedFeatureVector extends FeatureVector {
     }
 
     @Override
-    public FeatureVector divide(CompressedFeatureVector other) {
-        HashMap<Integer, Double> updatedIndexMap = new HashMap<>();
-        for (Map.Entry<Integer, Double> pair : indexMap.entrySet()) {
-            int index = pair.getKey();
-            double val = pair.getValue();
-            updatedIndexMap.put(index, val / other.get(index));
-        }
-        return new CompressedFeatureVector(length, updatedIndexMap);
-    }
-
-    @Override
-    public FeatureVector divide(int scalar) {
-        return divide((double) scalar);
-    }
-
-    @Override
     public FeatureVector divide(double scalar) {
+        if (scalar == 0)
+            return super.divide(scalar);
+
         HashMap<Integer, Double> updatedIndexMap = new HashMap<>();
         for (Map.Entry<Integer, Double> pair : indexMap.entrySet()) {
             updatedIndexMap.put(pair.getKey(), pair.getValue() / scalar);
-        }
-        return new CompressedFeatureVector(length, updatedIndexMap);
-    }
-
-    @Override
-    public FeatureVector pow(double scalar) {
-        HashMap<Integer, Double> updatedIndexMap = new HashMap<>();
-        for (Map.Entry<Integer, Double> pair : indexMap.entrySet()) {
-            updatedIndexMap.put(pair.getKey(), Math.pow(pair.getValue(), scalar));
         }
         return new CompressedFeatureVector(length, updatedIndexMap);
     }
@@ -190,29 +168,30 @@ public class CompressedFeatureVector extends FeatureVector {
     @Override
     public boolean containsAll(Collection<?> c) { return indexMap.keySet().containsAll(c); }
 
-private class CompressedIterator implements Iterator<Double> {
+    private class CompressedIterator implements Iterator<Double> {
 
-    private CompressedFeatureVector vector;
-    private Set<Integer> nonZeroIndices;
-    private int currentIndex;
+        private CompressedFeatureVector vector;
+        private Set<Integer> nonZeroIndices;
+        private int currentIndex;
 
-    CompressedIterator(CompressedFeatureVector vector) {
-        this.vector = vector;
-        nonZeroIndices = vector.nonZeros();
-        currentIndex = 0;
+        CompressedIterator(CompressedFeatureVector vector) {
+            this.vector = vector;
+            nonZeroIndices = vector.nonZeros();
+            currentIndex = 0;
+        }
+
+        @Override
+        public boolean hasNext() {
+                                       return currentIndex < vector.size();
+                                                                           }
+
+        @Override
+        public Double next() {
+            currentIndex++;
+            if (nonZeroIndices.contains(currentIndex - 1))
+                return vector.get(currentIndex - 1);
+            else
+                return 0.0;
+        }
     }
-
-    @Override
-    public boolean hasNext() {
-        return currentIndex < vector.size();
-    }
-
-    @Override
-    public Double next() {
-        if (nonZeroIndices.contains(currentIndex))
-            return vector.get(currentIndex);
-        else
-            return 0.0;
-    }
-
 }

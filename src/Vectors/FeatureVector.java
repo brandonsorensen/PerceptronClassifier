@@ -239,6 +239,9 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
         return vector;
     }
 
+    /**
+     * Sets all elements to zero.
+     */
     public void zero() {
         for (int i = 0; i < size(); i++) {
             vector[i] = 0.0;
@@ -316,5 +319,12 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
     @Override
     public void clear() {
         zero();
+    }
+
+    public static FeatureVector randomInitialize(int length) {
+        double[] randArray = new double[length];
+        for (int i = 0; i < length; i++)
+            randArray[i] = Math.random();
+        return new FeatureVector(randArray);
     }
 }
