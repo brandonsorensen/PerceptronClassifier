@@ -47,10 +47,6 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
         return other.dot(this);
     }
 
-    public FeatureVector addition(FeatureVector other) {
-        return null;
-    }
-
     public void additionInPlace(FeatureVector other) {
 
     }
@@ -60,7 +56,7 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
     }
 
     public FeatureVector addition(CompressedFeatureVector other) {
-        return other.add(this);
+        return null;
     }
 
     public FeatureVector addition(FeatureVector other) {
@@ -69,6 +65,7 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
             retVector[i] = this.get(i) +  other.get(i);
         return new FeatureVector(retVector);
     }
+
     FeatureVector addition(int scalar) { return addition((double) scalar); }
 
     public FeatureVector addition(double scalar) {
@@ -89,10 +86,6 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
         return subtract((FeatureVector) other);
     }
 
-    public FeatureVector subtract(FeatureVector other) {
-        return subtract((FeatureVector) other);
-    }
-
     public FeatureVector subtract(int scalar) {
         return addition(-scalar);
     }
@@ -105,6 +98,10 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
 
     }
 
+    public void subtractInPlace(int scalar) {
+        subtract((double) scalar);
+    }
+
     public void subtractInPlace(double scalar) {
 
     }
@@ -114,15 +111,11 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
     }
 
     public FeatureVector multiply(CompressedFeatureVector other) {
-        return null;
-    }
-
-    public FeatureVector multiply(FeatureVector other) {
-        return null;
+        return other.multiply(this);
     }
 
     public FeatureVector multiply(int scalar) {
-        return null;
+        return multiply((double) scalar);
     }
 
     public FeatureVector multiply(double scalar) {
@@ -145,13 +138,7 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
         return null;
     }
 
-    public FeatureVector divide(FeatureVector other) {
-        return null;
-    }
-
-    public FeatureVector divide(int scalar) {
-        return null;
-    }
+    public FeatureVector divide(int scalar) { return divide((double) scalar); }
 
     public FeatureVector divide(double scalar) {
         return null;
@@ -161,6 +148,8 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
 
     }
 
+    public void divideInPlace(int scalar) { divideInPlace((double) scalar); }
+
     public void divideInPlace(double scalar) {
 
     }
@@ -169,8 +158,7 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
         return null;
     }
 
-    public FeatureVector pow(int scalar) {
-        return null;
+    public FeatureVector pow(int scalar) { return pow((double) scalar);
     }
 
     public FeatureVector pow(double scalar) {
@@ -180,6 +168,8 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
     public void powInPlace(FeatureVector other) {
 
     }
+
+    public void powInPlace(int scalar) {powInPlace((double) scalar);}
 
     public void powInPlace(double scalar) {
 
@@ -192,7 +182,6 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
         return sum;
     }
 
-    @Override
     public double product() {
         double product = 0.0;
         for (double val : this)
@@ -205,17 +194,16 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
         return vector.length;
     }
 
-    @Override
     public double get(int index) {
-        return 0;
+        return vector[index];
     }
 
-    @Override
     public void set(int index, double val) {
-
+        if (index < 0 || index >= size())
+            throw new IndexOutOfBoundsException();
+        vector[index] = val;
     }
 
-    @Override
     public FeatureVector changeState() {
         return compress();
     }
@@ -230,12 +218,10 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
         return new CompressedFeatureVector(this.size(), nonZeroIndices);
     }
 
-    @Override
     public boolean isCompressed() {
         return false;
     }
 
-    @Override
     public void update(FeatureVector other) {
         vector = other.getVector();
     }
@@ -245,12 +231,14 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
     }
 
     @Override
-    public boolean isEmpty() {
-        return size() == 0;
-    }
+    public boolean isEmpty() { return size() == 0; }
 
     @Override
     public boolean contains(Object o) {
+        for (Double val : this) {
+            if (val.equals(o))
+                return true;
+        }
         return false;
     }
 
@@ -285,26 +273,30 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        return false;
+        for (Object elem : c) {
+            if (!contains(elem))
+                return false;
+        }
+        return true;
     }
 
     @Override
     public boolean addAll(Collection<? extends Double> c) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void clear() {
-
+        throw new UnsupportedOperationException();
     }
 }
