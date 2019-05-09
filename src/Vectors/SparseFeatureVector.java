@@ -1,5 +1,4 @@
 package Vectors;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class SparseFeatureVector implements FeatureVector {
@@ -22,6 +21,18 @@ public class SparseFeatureVector implements FeatureVector {
 
     SparseFeatureVector(double[] vector) {
         this.vector = vector;
+    }
+
+    @Override
+    public double dot(FeatureVector other) {
+        double dotProduct = 0.0;
+        for (int i = 0; i < getLength(); i++)
+            dotProduct += get(i) * other.get(i);
+        return dotProduct;
+    }
+
+    public double dot(CompressedFeatureVector other) {
+        return other.dot(this);
     }
 
     @Override
@@ -154,10 +165,10 @@ public class SparseFeatureVector implements FeatureVector {
 
     @Override
     public FeatureVector changeState() {
-        return null;
+        return compress();
     }
 
-    public CompressedFeatureVector compressed() {
+    public CompressedFeatureVector compress() {
         Map<Integer, Double> nonZeroIndices = new HashMap<>();
         for (int i = 0; i < getLength(); i++) {
             double value = get(i);
