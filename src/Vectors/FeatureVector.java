@@ -1,8 +1,6 @@
 package Vectors;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 interface FeatureVector extends Collection<Double>, Iterable<Double> {
     /**
@@ -45,6 +43,7 @@ interface FeatureVector extends Collection<Double>, Iterable<Double> {
     }
 
     default void additionInPlace(FeatureVector other) {
+        checkVectorSize(other);
         for (int i = 0; i < size(); i++)
             set(i, get(i) + other.get(i));
     }
@@ -77,6 +76,7 @@ interface FeatureVector extends Collection<Double>, Iterable<Double> {
     }
 
     default void subtractInPlace(FeatureVector other) {
+        checkVectorSize(other);
         for (int i = 0; i < size(); i++)
             set(i, get(i) - other.get(i));
     }
@@ -98,6 +98,7 @@ interface FeatureVector extends Collection<Double>, Iterable<Double> {
     FeatureVector multiply(double scalar);
 
     default void multiplyInPlace(FeatureVector other) {
+        checkVectorSize(other);
         for (int i = 0; i < size(); i++)
             set(i, get(i) * other.get(i));
     }
@@ -115,7 +116,8 @@ interface FeatureVector extends Collection<Double>, Iterable<Double> {
 
     FeatureVector divide(double scalar);
 
-    default void divideInPlace(SparseFeatureVector other) {
+    default void divideInPlace(FeatureVector other) {
+        checkVectorSize(other);
         for (int i = 0; i < size(); i++)
             set(i, get(i) / other.get(i));
     }
@@ -178,6 +180,27 @@ interface FeatureVector extends Collection<Double>, Iterable<Double> {
     }
 
     /**
+     * Sets all elements to zero.
+     */
+    default void zero() {
+        for (int i = 0; i < size(); i++)
+            set(i, 0);
+    }
+
+    /**
+     * Returns all indices at which the value is not zero
+     * @return all indices at which the value is not zero
+     */
+    default List<Integer> nonZeroIndices() {
+        LinkedList<Integer> retVal = new LinkedList<>();
+        for (int i = 0; i < size(); i++) {
+            if (get(i) != 0)
+                retVal.add(i);
+        }
+        return retVal;
+    }
+
+    /**
      * Get the value at a given dimension.
      * @param index the given index
      * @return the value at a given index
@@ -199,6 +222,12 @@ interface FeatureVector extends Collection<Double>, Iterable<Double> {
     FeatureVector changeState();
 
     /**
+     * Updates the values of this vector to match those of another.
+     * @param other another <code>SparseFeatureVector</code>
+     */
+    void update(FeatureVector other);
+
+    /**
      * Whether the vector is compressed or sparse.
      * @return whether the vector is compressed or sparse.
      */
@@ -210,8 +239,32 @@ interface FeatureVector extends Collection<Double>, Iterable<Double> {
      */
     double[] getVector();
 
-    /**
-     * Sets all elements to zero.
-     */
-    void zero();
+    @Override
+    default void clear() {
+        zero();
+    }
+
+    @Override
+    default boolean add(Double aDouble) {
+        throw new UnsupportedOperationException("FeatureVectors cannot change length.");
+    }
+
+    @Override
+    default boolean remove(Object o) {
+        throw new UnsupportedOperationException("FeatureVectors cannot change length.");
+    }
+
+    @Override
+    default boolean addAll(Collection<? extends Double> c) {
+        throw new UnsupportedOperationException("FeatureVectors cannot change length.");
+    }
+
+    @Override
+    default boolean removeAll(Collection<?> c) {
+        throw new UnsupportedOperationException("FeatureVectors cannot change length.");
+    }
+    @Override
+    default boolean retainAll(Collection<?> c) {
+        throw new UnsupportedOperationException("FeatureVectors cannot change length.");
+    }
 }

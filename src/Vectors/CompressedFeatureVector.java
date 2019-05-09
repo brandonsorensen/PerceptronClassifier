@@ -199,16 +199,6 @@ public class CompressedFeatureVector implements FeatureVector {
     }
 
     @Override
-    public boolean add(Double aDouble) {
-        return false;
-    }
-
-    @Override
-    public boolean remove(Object o) {
-        return false;
-    }
-
-    @Override
     public double[] getVector() {
         double[] vector = new double[length];
         Iterator<Double> iter = iterator();
@@ -218,48 +208,21 @@ public class CompressedFeatureVector implements FeatureVector {
         return vector;
     }
 
-    public Set<Integer> nonZeros() {
-        return indexMap.keySet();
-    }
-
-    public int[] nonZeroIndices() {
-        int[] retArray = new int[indexMap.size()];
-        int currentIndex = 0;
-        for (int index : indexMap.keySet()) {
-            retArray[currentIndex] = index;
-            currentIndex++;
-        }
+    public List<Double> nonZeros() {
+        ArrayList<Double> retArray = new ArrayList<>(indexMap.size());
+        retArray.addAll(indexMap.values());
         return retArray;
     }
 
+    public List<Integer> nonZeroIndices() {
+        ArrayList<Integer> retArray = new ArrayList<>(indexMap.size());
+        retArray.addAll(indexMap.keySet());
+        return retArray;
+    }
+
+    @Override
     public void zero() {
         indexMap = new HashMap<>();
-    }
-
-    @Override
-    public boolean contains(Object o) { return indexMap.keySet().contains(o); }
-
-    @Override
-    public boolean containsAll(Collection<?> c) { return indexMap.keySet().containsAll(c); }
-
-    @Override
-    public boolean addAll(Collection<? extends Double> c) {
-        return false;
-    }
-
-    @Override
-    public boolean removeAll(Collection<?> c) {
-        return false;
-    }
-
-    @Override
-    public boolean retainAll(Collection<?> c) {
-        return false;
-    }
-
-    @Override
-    public void clear() {
-
     }
 
     private class CompressedIterator implements Iterator<Double> {
