@@ -1,42 +1,17 @@
 package Vectors;
-import java.util.*;
 
-// TODO: Does it make sense to inherit from Collection?
-public class FeatureVector implements Collection<Double>, Iterable<Double> {
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
-    private double[] vector;
-
-    /**
-     * Initializes an empty vector.
-     */
-    FeatureVector() {
-        vector = new double[0];
-    }
-
-    /**
-     * Initializes a vector containing all zeros of a given length.
-     * @param length the length of the vector
-     */
-    FeatureVector(int length) {
-        vector = new double[length];
-    }
-
-    FeatureVector(List<Double> vector) {
-        this.vector = new double[vector.size()];
-        for (int i = 0; i < vector.size(); i++)
-            this.vector[i] = vector.get(i);
-    }
-
-    FeatureVector(double[] vector) {
-        this.vector = vector;
-    }
-    
+interface FeatureVector extends Collection<Double>, Iterable<Double> {
     /**
      * Calculates the cosine similarity of two vectors.
+     *
      * @param other another vector
      * @return the cosine similarity of this and another vector
      */
-    double cosineSimilarity(FeatureVector other) {
+    default double cosineSimilarity(FeatureVector other) {
         double dotProduct = 0.0, euclideanLengthA = 0.0, euclideanLengthB = 0.0;
         for (int i = 0; i < size(); i++) {
             double thisValue = get(i);
@@ -50,303 +25,193 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
         return dotProduct / (Math.sqrt(euclideanLengthA) * Math.sqrt(euclideanLengthB));
     }
 
-    public double dot(FeatureVector other) {
+    /**
+     * Calculates the dot product of two vectors.
+     * @param other another vector
+     * @return the dot product of the two vectors
+     */
+    default double dot(FeatureVector other) {
+        checkVectorSize(other);
         double dotProduct = 0.0;
         for (int i = 0; i < this.size(); i++)
             dotProduct += get(i) * other.get(i);
         return dotProduct;
     }
 
-    public double dot(CompressedFeatureVector other) {
-        return other.dot(this);
+    default void checkVectorSize(FeatureVector other) {
+        if (other.size() != size()) {
+            throw new IllegalArgumentException("Vectors are not of equal lengths");
+        }
     }
 
-    public void additionInPlace(FeatureVector other) {
+    default void additionInPlace(FeatureVector other) {
         for (int i = 0; i < size(); i++)
             set(i, get(i) + other.get(i));
     }
 
-    public void additionInPlace(int scalar) { additionInPlace((double) scalar); }
+    default void additionInPlace(int scalar) {
+        additionInPlace((double) scalar);
+    }
 
-    public void additionInPlace(double scalar) {
+    default void additionInPlace(double scalar) {
         for (int i = 0; i < size(); i++)
             set(i, get(i) + scalar);
     }
 
-    public FeatureVector addition(FeatureVector other) {
-        double[] retVector = new double[this.size()];
-        for (int i = 0; i < this.size(); i++)
-            retVector[i] = this.get(i) +  other.get(i);
-        return new FeatureVector(retVector);
+    FeatureVector addition(FeatureVector other);
+
+    default FeatureVector addition(int scalar) {
+        return addition((double) scalar);
     }
 
-    FeatureVector addition(int scalar) { return addition((double) scalar); }
+    FeatureVector addition(double scalar);
 
-    public FeatureVector addition(double scalar) {
-        double[] retVector = new double[this.size()];
-        for (int i = 0; i < this.size(); i++)
-            retVector[i] = this.get(i) + scalar;
-        return new FeatureVector(retVector);
+    FeatureVector subtract(FeatureVector other);
+
+    default FeatureVector subtract(int scalar) {
+        return subtract((double) scalar);
     }
 
-    public FeatureVector subtract(FeatureVector other) {
-        double[] retVector = new double[this.size()];
-        for (int i = 0; i < this.size(); i++)
-            retVector[i] = this.get(i) - other.get(i);
-        return new FeatureVector(retVector);
-    }
-
-    public FeatureVector subtract(int scalar) {
+    default FeatureVector subtract(double scalar) {
         return addition(-scalar);
     }
 
-    public FeatureVector subtract(double scalar) {
-        return addition(-scalar);
-    }
-
-    public void subtractInPlace(FeatureVector other) {
+    default void subtractInPlace(FeatureVector other) {
         for (int i = 0; i < size(); i++)
             set(i, get(i) - other.get(i));
     }
 
-    public void subtractInPlace(int scalar) {
+    default void subtractInPlace(int scalar) {
         subtract((double) scalar);
     }
 
-    public void subtractInPlace(double scalar) {
+    default void subtractInPlace(double scalar) {
         additionInPlace(-scalar);
     }
 
-    public FeatureVector multiply(FeatureVector other) {
-        double[] retVector = new double[this.size()];
-        for (int i = 0; i < this.size(); i++)
-            retVector[i] = this.get(i) * other.get(i);
-        return new FeatureVector(retVector);
-    }
+    FeatureVector multiply(FeatureVector other);
 
-    public FeatureVector multiply(CompressedFeatureVector other) {
-        return other.multiply(this);
-    }
-
-    public FeatureVector multiply(int scalar) {
+    default FeatureVector multiply(int scalar) {
         return multiply((double) scalar);
     }
 
-    public FeatureVector multiply(double scalar) {
-        double[] retVector = new double[this.size()];
-        for (int i = 0; i < this.size(); i++)
-            retVector[i] = this.get(i) * scalar;
-        return new FeatureVector(retVector);
-    }
+    FeatureVector multiply(double scalar);
 
-    public void multiplyInPlace(FeatureVector other) {
+    default void multiplyInPlace(FeatureVector other) {
         for (int i = 0; i < size(); i++)
             set(i, get(i) * other.get(i));
     }
 
-    public void multiplyInPlace(double scalar) {
+    default void multiplyInPlace(double scalar) {
         for (int i = 0; i < size(); i++)
             set(i, get(i) * scalar);
     }
 
-    public FeatureVector divide(FeatureVector other) {
-        double[] retVector = new double[size()];
-        for (int i = 0; i < this.size(); i++)
-            retVector[i] = this.get(i) / other.get(i);
-        return new FeatureVector(retVector);
+    FeatureVector divide(FeatureVector other);
+
+    default FeatureVector divide(int scalar) {
+        return divide((double) scalar);
     }
 
-    public FeatureVector divide(int scalar) { return divide((double) scalar); }
+    FeatureVector divide(double scalar);
 
-    public FeatureVector divide(double scalar) {
-        double[] retVector = new double[size()];
-        for (int i = 0; i < size(); i++)
-            retVector[i] = get(i) / scalar;
-        return new FeatureVector(retVector);
-    }
-
-    public void divideInPlace(FeatureVector other) {
+    default void divideInPlace(SparseFeatureVector other) {
         for (int i = 0; i < size(); i++)
             set(i, get(i) / other.get(i));
     }
 
-    public void divideInPlace(int scalar) { divideInPlace((double) scalar); }
+    default void divideInPlace(int scalar) {
+        divideInPlace((double) scalar);
+    }
 
-    public void divideInPlace(double scalar) {
+    default void divideInPlace(double scalar) {
         for (int i = 0; i < size(); i++)
             set(i, get(i) / scalar);
     }
 
-    public FeatureVector pow(FeatureVector other) {
-        double[] retVector = new double[size()];
-        for (int i = 0; i < size(); i++)
-            set(i, Math.pow(get(i), other.get(i)));
-        return new FeatureVector(retVector);
+    FeatureVector pow(FeatureVector other);
+
+    default FeatureVector pow(int scalar) {
+        return pow((double) scalar);
     }
 
-    public FeatureVector pow(int scalar) { return pow((double) scalar); }
+    FeatureVector pow(double scalar);
 
-    public FeatureVector pow(double scalar) {
-        double[] retVector = new double[size()];
-        for (int i = 0; i < this.size(); i++)
-            retVector[i] = Math.pow(this.get(i), other.get(i));
-        return new FeatureVector(retVector);
-
-    }
-
-    public void powInPlace(FeatureVector other) {
+    default void powInPlace(FeatureVector other) {
         for (int i = 0; i < size(); i++)
             set(i, Math.pow(get(i), other.get(i)));
     }
 
-    public void powInPlace(int scalar) {powInPlace((double) scalar);}
+    /**
+     * Takes every dimension of the vector to the power of a given value
+     * @param scalar a given scalar
+     */
+    default void powInPlace(int scalar) {
+        powInPlace((double) scalar);
+    }
 
-    public void powInPlace(double scalar) {
+    default void powInPlace(double scalar) {
         for (int i = 0; i < size(); i++)
             set(i, Math.pow(get(i), scalar));
     }
 
-    public double sum() {
+    /**
+     * Gets the sum of all the values in the vector
+     * @return the sum of all the values in the vector.
+     */
+    default double sum() {
         int sum = 0;
         for (double val : this)
             sum += val;
         return sum;
     }
 
-    public double product() {
+    /**
+     * Gets the inner product of the vector
+     * @return the inner product of the vector
+     */
+    default double product() {
         double product = 0.0;
         for (double val : this)
             product *= val;
         return product;
     }
 
-    @Override
-    public int size() {
-        return vector.length;
-    }
+    /**
+     * Get the value at a given dimension.
+     * @param index the given index
+     * @return the value at a given index
+     */
+    double get(int index);
 
-    public double get(int index) {
-        return vector[index];
-    }
+    /**
+     * Sets the value at a given index.
+     * @param index the index to change
+     * @param val the value to update index
+     */
+    void set(int index, double val);
 
-    public void set(int index, double val) {
-        if (index < 0 || index >= size())
-            throw new IndexOutOfBoundsException();
-        vector[index] = val;
-    }
+    /**
+     * Returns a <code>CompressedFeatureVector</code> if the current feature of
+     * type <code>SparseFeatureVector</code> and vice versa.
+     * @return
+     */
+    FeatureVector changeState();
 
-    public FeatureVector changeState() {
-        return compress();
-    }
+    /**
+     * Whether the vector is compressed or sparse.
+     * @return whether the vector is compressed or sparse.
+     */
+    boolean isCompressed();
 
-    public CompressedFeatureVector compress() {
-        Map<Integer, Double> nonZeroIndices = new HashMap<>();
-        for (int i = 0; i < this.size(); i++) {
-            double value = get(i);
-            if (value != 0)
-                nonZeroIndices.put(i, value);
-        }
-        return new CompressedFeatureVector(this.size(), nonZeroIndices);
-    }
-
-    public boolean isCompressed() {
-        return false;
-    }
-
-    public void update(FeatureVector other) {
-        vector = other.getVector();
-    }
-
-    public double[] getVector() {
-        return vector;
-    }
+    /**
+     * Gets the internal array of the vector.
+     * @return the internal double array of the vector.
+     */
+    double[] getVector();
 
     /**
      * Sets all elements to zero.
      */
-    public void zero() {
-        for (int i = 0; i < size(); i++) {
-            vector[i] = 0.0;
-        }
-    }
-
-    @Override
-    public boolean isEmpty() { return size() == 0; }
-
-    @Override
-    public boolean contains(Object o) {
-        for (Double val : this) {
-            if (val.equals(o))
-                return true;
-        }
-        return false;
-    }
-
-    public Iterator<Double> iterator() {
-        List array = Arrays.asList(vector);
-        return (Iterator<Double>) array.iterator();
-    }
-
-    @Override
-    public Object[] toArray() {
-        Object[] asObject = new Object[size()];
-        for (int i = 0; i < size(); i++)
-            asObject[i] = get(i);
-        return asObject;
-    }
-
-    @Override
-    public <T> T[] toArray(T[] a) {
-        T[] asGeneric = new T[size()];
-        return (T[]) vector;
-    }
-
-    @Override
-    public boolean add(Double aDouble) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean remove(Object o) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        for (Object elem : c) {
-            if (!contains(elem))
-                return false;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends Double> c) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean removeAll(Collection<?> c) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean retainAll(Collection<?> c) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Resets all elements in the vector to zero.
-     */
-    @Override
-    public void clear() {
-        zero();
-    }
-
-    public static FeatureVector randomInitialize(int length) {
-        double[] randArray = new double[length];
-        for (int i = 0; i < length; i++)
-            randArray[i] = Math.random();
-        return new FeatureVector(randArray);
-    }
+    void zero();
 }

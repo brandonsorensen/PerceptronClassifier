@@ -1,8 +1,14 @@
 package Vectors;
 import java.util.*;
-import java.lang.Math;
 
-public class CompressedFeatureVector extends FeatureVector {
+/**
+ * A compressed implementation of the <code>FeatureVector</code> interface.
+ * Only stores non-zero values. Maintains a <code>Map</code> of non-zero indices
+ * to their corresponding values. This represents a significant savings in memory
+ * for vectors that are at all sparse. It also significantly speeds up vector multiplication
+ * on sparse vectors.
+ */
+public class CompressedFeatureVector implements FeatureVector {
 
     private Map<Integer, Double> indexMap;
     private int length;
@@ -51,7 +57,26 @@ public class CompressedFeatureVector extends FeatureVector {
         return dotProduct;
     }
 
-    public FeatureVector multiply(FeatureVector other) {
+    @Override
+    public CompressedFeatureVector addition(FeatureVector other) {
+        HashMap<Integer, Double> retMap = new HashMap<>();
+        for (int i = 0; i < this.size(); i++)
+            retMap.put(i, this.get(i) + other.get(i));
+        return new CompressedFeatureVector(length, retMap);
+    }
+
+    @Override
+    public FeatureVector addition(double scalar) {
+        return null;
+    }
+
+    @Override
+    public FeatureVector subtract(FeatureVector other) {
+        return null;
+    }
+
+    @Override
+    public CompressedFeatureVector multiply(FeatureVector other) {
         HashMap<Integer, Double> updatedIndexMap = new HashMap<>();
         for (Map.Entry<Integer, Double> pair : indexMap.entrySet()) {
             int index = pair.getKey();
@@ -62,12 +87,7 @@ public class CompressedFeatureVector extends FeatureVector {
     }
 
     @Override
-    public FeatureVector multiply(int scalar) {
-        return multiply((double) scalar);
-    }
-
-    @Override
-    public FeatureVector multiply(double scalar) {
+    public CompressedFeatureVector multiply(double scalar) {
         HashMap<Integer, Double> updatedIndexMap = new HashMap<>();
         for (Map.Entry<Integer, Double> pair: indexMap.entrySet()) {
             updatedIndexMap.put(pair.getKey(), pair.getValue() * scalar);
@@ -76,15 +96,30 @@ public class CompressedFeatureVector extends FeatureVector {
     }
 
     @Override
-    public FeatureVector divide(double scalar) {
+    public FeatureVector divide(FeatureVector other) {
+        return null;
+    }
+
+    @Override
+    public CompressedFeatureVector divide(double scalar) {
         if (scalar == 0)
-            return super.divide(scalar);
+            throw new IllegalArgumentException("Argument 'scalar' is 0");
 
         HashMap<Integer, Double> updatedIndexMap = new HashMap<>();
         for (Map.Entry<Integer, Double> pair : indexMap.entrySet()) {
             updatedIndexMap.put(pair.getKey(), pair.getValue() / scalar);
         }
         return new CompressedFeatureVector(length, updatedIndexMap);
+    }
+
+    @Override
+    public FeatureVector pow(FeatureVector other) {
+        return null;
+    }
+
+    @Override
+    public FeatureVector pow(double scalar) {
+        return null;
     }
 
     @Override
@@ -111,6 +146,11 @@ public class CompressedFeatureVector extends FeatureVector {
     }
 
     @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
     public double get(int index) {
         if (indexMap.containsKey(index)) {
             return indexMap.get(index);
@@ -127,12 +167,12 @@ public class CompressedFeatureVector extends FeatureVector {
     }
 
     @Override
-    public FeatureVector changeState() {
+    public SparseFeatureVector changeState() {
         return sparsify();
     }
 
-    public FeatureVector sparsify() {
-        return new FeatureVector(getVector());
+    public SparseFeatureVector sparsify() {
+        return new SparseFeatureVector(getVector());
     }
 
     @Override
@@ -149,6 +189,26 @@ public class CompressedFeatureVector extends FeatureVector {
     }
 
     @Override
+    public Object[] toArray() {
+        return new Object[0];
+    }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        return null;
+    }
+
+    @Override
+    public boolean add(Double aDouble) {
+        return false;
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        return false;
+    }
+
+    @Override
     public double[] getVector() {
         double[] vector = new double[length];
         Iterator<Double> iter = iterator();
@@ -162,11 +222,45 @@ public class CompressedFeatureVector extends FeatureVector {
         return indexMap.keySet();
     }
 
+    public int[] nonZeroIndices() {
+        int[] retArray = new int[indexMap.size()];
+        int currentIndex = 0;
+        for (int index : indexMap.keySet()) {
+            retArray[currentIndex] = index;
+            currentIndex++;
+        }
+        return retArray;
+    }
+
+    public void zero() {
+        indexMap = new HashMap<>();
+    }
+
     @Override
     public boolean contains(Object o) { return indexMap.keySet().contains(o); }
 
     @Override
     public boolean containsAll(Collection<?> c) { return indexMap.keySet().containsAll(c); }
+
+    @Override
+    public boolean addAll(Collection<? extends Double> c) {
+        return false;
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        return false;
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        return false;
+    }
+
+    @Override
+    public void clear() {
+
+    }
 
     private class CompressedIterator implements Iterator<Double> {
 
@@ -181,9 +275,7 @@ public class CompressedFeatureVector extends FeatureVector {
         }
 
         @Override
-        public boolean hasNext() {
-                                       return currentIndex < vector.size();
-                                                                           }
+        public boolean hasNext() { return currentIndex < vector.size(); }
 
         @Override
         public Double next() {
