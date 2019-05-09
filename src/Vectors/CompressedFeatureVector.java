@@ -12,6 +12,7 @@ public class CompressedFeatureVector implements FeatureVector {
 
     private Map<Integer, Double> indexMap;
     private int length;
+    private boolean isCompressed = true;
 
     CompressedFeatureVector(int length) {
         this(length, new HashMap<>());
@@ -151,6 +152,11 @@ public class CompressedFeatureVector implements FeatureVector {
     }
 
     @Override
+    public boolean contains(Object o) {
+        return indexMap.values().contains(o);
+    }
+
+    @Override
     public double get(int index) {
         if (indexMap.containsKey(index)) {
             return indexMap.get(index);
@@ -160,6 +166,9 @@ public class CompressedFeatureVector implements FeatureVector {
 
     @Override
     public void set(int index, double val) {
+        if (val == 0)
+            return;
+
         if (indexMap.containsKey(index))
             indexMap.put(index, val);
         else
@@ -178,6 +187,15 @@ public class CompressedFeatureVector implements FeatureVector {
     @Override
     public boolean isCompressed() { return true; }
 
+    @Override
+    public void update(FeatureVector other) {
+        for (int i = 0; i < size(); i++) {
+            double val = other.get(i);
+            if (val != 0)
+                set(i, val);
+        }
+    }
+
     public void update(CompressedFeatureVector other) {
         indexMap = other.indexMap;
         length = other.size();
@@ -194,8 +212,12 @@ public class CompressedFeatureVector implements FeatureVector {
     }
 
     @Override
-    public <T> T[] toArray(T[] a) {
-        return null;
+    public boolean containsAll(Collection<?> c) {
+        for (Object o : c) {
+            if (!contains(o))
+                return false;
+        }
+        return true;
     }
 
     @Override
@@ -228,12 +250,12 @@ public class CompressedFeatureVector implements FeatureVector {
     private class CompressedIterator implements Iterator<Double> {
 
         private CompressedFeatureVector vector;
-        private Set<Integer> nonZeroIndices;
+        private List<Integer> nonZeroIndices;
         private int currentIndex;
 
         CompressedIterator(CompressedFeatureVector vector) {
             this.vector = vector;
-            nonZeroIndices = vector.nonZeros();
+            nonZeroIndices = vector.nonZeroIndices();
             currentIndex = 0;
         }
 

@@ -37,6 +37,7 @@ public class SparseFeatureVector implements FeatureVector {
 
     @Override
     public FeatureVector addition(FeatureVector other) {
+        checkVectorSize(other);
         double[] retVector = new double[this.size()];
         for (int i = 0; i < this.size(); i++)
             retVector[i] = this.get(i) +  other.get(i);
@@ -53,6 +54,7 @@ public class SparseFeatureVector implements FeatureVector {
 
     @Override
     public FeatureVector subtract(FeatureVector other) {
+        checkVectorSize(other);
         double[] retVector = new double[this.size()];
         for (int i = 0; i < this.size(); i++)
             retVector[i] = this.get(i) - other.get(i);
@@ -61,6 +63,7 @@ public class SparseFeatureVector implements FeatureVector {
 
     @Override
     public FeatureVector multiply(FeatureVector other) {
+        checkVectorSize(other);
         double[] retVector = new double[this.size()];
         for (int i = 0; i < this.size(); i++)
             retVector[i] = this.get(i) * other.get(i);
@@ -81,6 +84,7 @@ public class SparseFeatureVector implements FeatureVector {
 
     @Override
     public FeatureVector divide(FeatureVector other) {
+        checkVectorSize(other);
         double[] retVector = new double[size()];
         for (int i = 0; i < this.size(); i++)
             retVector[i] = this.get(i) / other.get(i);
@@ -97,6 +101,7 @@ public class SparseFeatureVector implements FeatureVector {
 
     @Override
     public FeatureVector pow(FeatureVector other) {
+        checkVectorSize(other);
         double[] retVector = new double[size()];
         for (int i = 0; i < size(); i++)
             set(i, Math.pow(get(i), other.get(i)));
@@ -111,7 +116,8 @@ public class SparseFeatureVector implements FeatureVector {
         return new SparseFeatureVector(retVector);
     }
 
-    public void powInPlace(SparseFeatureVector other) {
+    public void powInPlace(FeatureVector other) {
+        checkVectorSize(other);
         for (int i = 0; i < size(); i++)
             set(i, Math.pow(get(i), other.get(i)));
     }
@@ -149,11 +155,8 @@ public class SparseFeatureVector implements FeatureVector {
         return false;
     }
 
-    /**
-     * Updates the values of this vector to match those of another.
-     * @param other another <code>SparseFeatureVector</code>
-     */
-    public void update(SparseFeatureVector other) {
+
+    public void update(FeatureVector other) {
         vector = other.getVector();
     }
 
@@ -161,12 +164,9 @@ public class SparseFeatureVector implements FeatureVector {
         return vector;
     }
 
-    /**
-     * Sets all elements to zero.
-     */
     public void zero() {
         for (int i = 0; i < size(); i++) {
-            vector[i] = 0.0;
+            set(i, 0);
         }
     }
 
@@ -218,21 +218,6 @@ public class SparseFeatureVector implements FeatureVector {
                 return false;
         }
         return true;
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends Double> c) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean removeAll(Collection<?> c) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean retainAll(Collection<?> c) {
-        throw new UnsupportedOperationException();
     }
 
     /**
