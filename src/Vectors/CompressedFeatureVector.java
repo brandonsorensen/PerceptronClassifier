@@ -1,9 +1,6 @@
 package Vectors;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.lang.Math;
-import java.util.Set;
 
 public class CompressedFeatureVector implements FeatureVector {
 
@@ -30,46 +27,6 @@ public class CompressedFeatureVector implements FeatureVector {
         return dotProduct;
     }
 
-    @Override
-    public FeatureVector add(CompressedFeatureVector other) {
-        return null;
-    }
-
-    @Override
-    public FeatureVector add(SparseFeatureVector other) {
-        return null;
-    }
-
-    @Override
-    public FeatureVector add(int scalar) {
-        return null;
-    }
-
-    @Override
-    public FeatureVector add(double scalar) {
-        return null;
-    }
-
-    @Override
-    public FeatureVector subtract(CompressedFeatureVector other) {
-        return null;
-    }
-
-    @Override
-    public FeatureVector subtract(SparseFeatureVector other) {
-        return null;
-    }
-
-    @Override
-    public FeatureVector subtract(int scalar) {
-        return null;
-    }
-
-    @Override
-    public FeatureVector subtract(double scalar) {
-        return null;
-    }
-
     public FeatureVector multiply(FeatureVector other) {
         HashMap<Integer, Double> updatedIndexMap = new HashMap<>();
         for (Map.Entry<Integer, Double> pair : indexMap.entrySet()) {
@@ -78,16 +35,6 @@ public class CompressedFeatureVector implements FeatureVector {
             updatedIndexMap.put(index, val * other.get(index));
         }
         return new CompressedFeatureVector(length, updatedIndexMap);
-    }
-
-    @Override
-    public FeatureVector multiply(CompressedFeatureVector other) {
-        return multiply((FeatureVector) other);
-    }
-
-    @Override
-    public FeatureVector multiply(SparseFeatureVector other) {
-        return multiply((FeatureVector) other);
     }
 
     @Override
@@ -116,11 +63,6 @@ public class CompressedFeatureVector implements FeatureVector {
     }
 
     @Override
-    public FeatureVector divide(SparseFeatureVector other) {
-        return null;
-    }
-
-    @Override
     public FeatureVector divide(int scalar) {
         return divide((double) scalar);
     }
@@ -132,11 +74,6 @@ public class CompressedFeatureVector implements FeatureVector {
             updatedIndexMap.put(pair.getKey(), pair.getValue() / scalar);
         }
         return new CompressedFeatureVector(length, updatedIndexMap);
-    }
-
-    @Override
-    public FeatureVector pow(int scalar) {
-        return pow((float) scalar);
     }
 
     @Override
@@ -192,17 +129,12 @@ public class CompressedFeatureVector implements FeatureVector {
         return sparsify();
     }
 
-    public SparseFeatureVector sparsify() {
-        return new SparseFeatureVector(getVector());
+    public FeatureVector sparsify() {
+        return new FeatureVector(getVector());
     }
 
     @Override
     public boolean isCompressed() { return true; }
-
-    @Override
-    public void update(FeatureVector other) {
-
-    }
 
     public void update(CompressedFeatureVector other) {
         indexMap = other.indexMap;
@@ -228,6 +160,12 @@ public class CompressedFeatureVector implements FeatureVector {
         return indexMap.keySet();
     }
 
+    @Override
+    public boolean contains(Object o) { return indexMap.keySet().contains(o); }
+
+    @Override
+    public boolean containsAll(Collection<?> c) { return indexMap.keySet().containsAll(c); }
+
 private class CompressedIterator implements Iterator<Double> {
 
     private CompressedFeatureVector vector;
@@ -252,4 +190,5 @@ private class CompressedIterator implements Iterator<Double> {
         else
             return 0.0;
     }
+
 }

@@ -1,6 +1,7 @@
 package Vectors;
 import java.util.*;
 
+// TODO: Does it make sense to inherit from Collection?
 public class FeatureVector implements Collection<Double>, Iterable<Double> {
 
     private double[] vector;
@@ -172,7 +173,8 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
     public void powInPlace(int scalar) {powInPlace((double) scalar);}
 
     public void powInPlace(double scalar) {
-
+        for (int i = 0; i < size(); i++)
+            set(i, Math.pow(get(i), scalar));
     }
 
     public double sum() {
