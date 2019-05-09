@@ -2,7 +2,7 @@ package Vectors;
 import java.util.*;
 import java.lang.Math;
 
-public class CompressedFeatureVector implements FeatureVector {
+public class CompressedFeatureVector extends FeatureVector {
 
     private Map<Integer, Double> indexMap;
     private int length;
@@ -14,6 +14,30 @@ public class CompressedFeatureVector implements FeatureVector {
     CompressedFeatureVector(int length, Map<Integer, Double> indexMap) {
         this.length = length;
         this.indexMap = indexMap;
+    }
+
+    CompressedFeatureVector(double[] vector) {
+        HashMap<Integer, Double> index = new HashMap<>();
+        this.length = vector.length;
+
+        for (int i = 0; i < length; i++) {
+            double value = vector[i];
+            if (value != 0)
+                index.put(i, vector[i]);
+        }
+        this.indexMap = index;
+    }
+
+    CompressedFeatureVector(List<Double> vector) {
+        HashMap<Integer, Double> index = new HashMap<>();
+        this.length = vector.size();
+
+        for (int i = 0; i < length; i++) {
+            double value = vector.get(i);
+            if (value != 0)
+                index.put(i, vector.get(i));
+        }
+        this.indexMap = index;
     }
 
     @Override
