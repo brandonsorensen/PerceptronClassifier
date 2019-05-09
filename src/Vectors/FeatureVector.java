@@ -62,15 +62,15 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
     }
 
     public void additionInPlace(FeatureVector other) {
-
+        for (int i = 0; i < size(); i++)
+            set(i, get(i) + other.get(i));
     }
+
+    public void additionInPlace(int scalar) { additionInPlace((double) scalar); }
 
     public void additionInPlace(double scalar) {
-
-    }
-
-    public FeatureVector addition(CompressedFeatureVector other) {
-        return null;
+        for (int i = 0; i < size(); i++)
+            set(i, get(i) + scalar);
     }
 
     public FeatureVector addition(FeatureVector other) {
@@ -96,10 +96,6 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
         return new FeatureVector(retVector);
     }
 
-    public FeatureVector subtract(CompressedFeatureVector other) {
-        return subtract((FeatureVector) other);
-    }
-
     public FeatureVector subtract(int scalar) {
         return addition(-scalar);
     }
@@ -109,7 +105,8 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
     }
 
     public void subtractInPlace(FeatureVector other) {
-
+        for (int i = 0; i < size(); i++)
+            set(i, get(i) - other.get(i));
     }
 
     public void subtractInPlace(int scalar) {
@@ -117,11 +114,14 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
     }
 
     public void subtractInPlace(double scalar) {
-
+        additionInPlace(-scalar);
     }
 
     public FeatureVector multiply(FeatureVector other) {
-        return null;
+        double[] retVector = new double[this.size()];
+        for (int i = 0; i < this.size(); i++)
+            retVector[i] = this.get(i) * other.get(i);
+        return new FeatureVector(retVector);
     }
 
     public FeatureVector multiply(CompressedFeatureVector other) {
@@ -133,54 +133,70 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
     }
 
     public FeatureVector multiply(double scalar) {
-        return null;
+        double[] retVector = new double[this.size()];
+        for (int i = 0; i < this.size(); i++)
+            retVector[i] = this.get(i) * scalar;
+        return new FeatureVector(retVector);
     }
 
     public void multiplyInPlace(FeatureVector other) {
-
+        for (int i = 0; i < size(); i++)
+            set(i, get(i) * other.get(i));
     }
 
     public void multiplyInPlace(double scalar) {
-
+        for (int i = 0; i < size(); i++)
+            set(i, get(i) * scalar);
     }
 
     public FeatureVector divide(FeatureVector other) {
-        return null;
-    }
-
-    public FeatureVector divide(CompressedFeatureVector other) {
-        return null;
+        double[] retVector = new double[size()];
+        for (int i = 0; i < this.size(); i++)
+            retVector[i] = this.get(i) / other.get(i);
+        return new FeatureVector(retVector);
     }
 
     public FeatureVector divide(int scalar) { return divide((double) scalar); }
 
     public FeatureVector divide(double scalar) {
-        return null;
+        double[] retVector = new double[size()];
+        for (int i = 0; i < size(); i++)
+            retVector[i] = get(i) / scalar;
+        return new FeatureVector(retVector);
     }
 
     public void divideInPlace(FeatureVector other) {
-
+        for (int i = 0; i < size(); i++)
+            set(i, get(i) / other.get(i));
     }
 
     public void divideInPlace(int scalar) { divideInPlace((double) scalar); }
 
     public void divideInPlace(double scalar) {
-
+        for (int i = 0; i < size(); i++)
+            set(i, get(i) / scalar);
     }
 
     public FeatureVector pow(FeatureVector other) {
-        return null;
+        double[] retVector = new double[size()];
+        for (int i = 0; i < size(); i++)
+            set(i, Math.pow(get(i), other.get(i)));
+        return new FeatureVector(retVector);
     }
 
-    public FeatureVector pow(int scalar) { return pow((double) scalar);
-    }
+    public FeatureVector pow(int scalar) { return pow((double) scalar); }
 
     public FeatureVector pow(double scalar) {
-        return null;
+        double[] retVector = new double[size()];
+        for (int i = 0; i < this.size(); i++)
+            retVector[i] = Math.pow(this.get(i), other.get(i));
+        return new FeatureVector(retVector);
+
     }
 
     public void powInPlace(FeatureVector other) {
-
+        for (int i = 0; i < size(); i++)
+            set(i, Math.pow(get(i), other.get(i)));
     }
 
     public void powInPlace(int scalar) {powInPlace((double) scalar);}
