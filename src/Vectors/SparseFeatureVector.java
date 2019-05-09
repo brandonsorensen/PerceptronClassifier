@@ -1,7 +1,7 @@
 package Vectors;
 import java.util.*;
 
-public class SparseFeatureVector implements FeatureVector {
+public class FeatureVector implements Collection<Double>, Iterable<Double> {
 
     private double[] vector;
 
@@ -9,24 +9,36 @@ public class SparseFeatureVector implements FeatureVector {
      * Initializes an empty vector of a given length.
      * @param length the length of the vector
      */
-    SparseFeatureVector(int length) {
+    FeatureVector(int length) {
         vector = new double[length];
     }
 
-    SparseFeatureVector(List<Double> vector) {
+    FeatureVector(List<Double> vector) {
         this.vector = new double[vector.size()];
         for (int i = 0; i < vector.size(); i++)
             this.vector[i] = vector.get(i);
     }
 
-    SparseFeatureVector(double[] vector) {
+    FeatureVector(double[] vector) {
         this.vector = vector;
     }
+    
+    /**
+     * Calculates the cosine similarity of two vectors.
+     * @param other another vector
+     * @return the cosine similarity of this and another vector
+     */
+    double cosineSimilarity(FeatureVector other) {
+        double dotProduct = dot(other);
+        double euclideanLengthA = pow(2).sum();
+        double euclideanLengthB = other.pow(2).sum();
 
-    @Override
+        return dotProduct / (Math.sqrt(euclideanLengthA) * Math.sqrt(euclideanLengthB));
+    }
+
     public double dot(FeatureVector other) {
         double dotProduct = 0.0;
-        for (int i = 0; i < getLength(); i++)
+        for (int i = 0; i < this.size(); i++)
             dotProduct += get(i) * other.get(i);
         return dotProduct;
     }
@@ -35,121 +47,161 @@ public class SparseFeatureVector implements FeatureVector {
         return other.dot(this);
     }
 
-    @Override
-    public FeatureVector add(CompressedFeatureVector other) {
+    public FeatureVector addition(FeatureVector other) {
+        return null;
+    }
+
+    public void additionInPlace(FeatureVector other) {
+
+    }
+
+    public void additionInPlace(double scalar) {
+
+    }
+
+    public FeatureVector addition(CompressedFeatureVector other) {
         return other.add(this);
     }
 
-    @Override
-    public FeatureVector add(SparseFeatureVector other) {
-        double[] retVector = new double[getLength()];
-        for (int i = 0; i < getLength(); i++)
+    public FeatureVector addition(FeatureVector other) {
+        double[] retVector = new double[this.size()];
+        for (int i = 0; i < this.size(); i++)
             retVector[i] = this.get(i) +  other.get(i);
-        return new SparseFeatureVector(retVector);
+        return new FeatureVector(retVector);
     }
+    FeatureVector addition(int scalar) { return addition((double) scalar); }
 
-    @Override
-    public FeatureVector add(int scalar) {
-        return add((double) scalar);
-    }
-
-    @Override
-    public FeatureVector add(double scalar) {
-        double[] retVector = new double[getLength()];
-        for (int i = 0; i < getLength(); i++)
+    public FeatureVector addition(double scalar) {
+        double[] retVector = new double[this.size()];
+        for (int i = 0; i < this.size(); i++)
             retVector[i] = this.get(i) + scalar;
-        return new SparseFeatureVector(retVector);
+        return new FeatureVector(retVector);
     }
 
     public FeatureVector subtract(FeatureVector other) {
-        double[] retVector = new double[getLength()];
-        for (int i = 0; i < getLength(); i++)
+        double[] retVector = new double[this.size()];
+        for (int i = 0; i < this.size(); i++)
             retVector[i] = this.get(i) - other.get(i);
-        return new SparseFeatureVector(retVector);
+        return new FeatureVector(retVector);
     }
 
-    @Override
     public FeatureVector subtract(CompressedFeatureVector other) {
         return subtract((FeatureVector) other);
     }
 
-    @Override
-    public FeatureVector subtract(SparseFeatureVector other) {
+    public FeatureVector subtract(FeatureVector other) {
         return subtract((FeatureVector) other);
     }
 
-    @Override
     public FeatureVector subtract(int scalar) {
-        return add(-scalar);
+        return addition(-scalar);
     }
 
-    @Override
     public FeatureVector subtract(double scalar) {
-        return add(-scalar);
+        return addition(-scalar);
     }
 
-    @Override
+    public void subtractInPlace(FeatureVector other) {
+
+    }
+
+    public void subtractInPlace(double scalar) {
+
+    }
+
+    public FeatureVector multiply(FeatureVector other) {
+        return null;
+    }
+
     public FeatureVector multiply(CompressedFeatureVector other) {
         return null;
     }
 
-    @Override
-    public FeatureVector multiply(SparseFeatureVector other) {
+    public FeatureVector multiply(FeatureVector other) {
         return null;
     }
 
-    @Override
     public FeatureVector multiply(int scalar) {
         return null;
     }
 
-    @Override
     public FeatureVector multiply(double scalar) {
         return null;
     }
 
-    @Override
+    public void multiplyInPlace(FeatureVector other) {
+
+    }
+
+    public void multiplyInPlace(double scalar) {
+
+    }
+
+    public FeatureVector divide(FeatureVector other) {
+        return null;
+    }
+
     public FeatureVector divide(CompressedFeatureVector other) {
         return null;
     }
 
-    @Override
-    public FeatureVector divide(SparseFeatureVector other) {
+    public FeatureVector divide(FeatureVector other) {
         return null;
     }
 
-    @Override
     public FeatureVector divide(int scalar) {
         return null;
     }
 
-    @Override
     public FeatureVector divide(double scalar) {
         return null;
     }
 
-    @Override
+    public void divideInPlace(FeatureVector other) {
+
+    }
+
+    public void divideInPlace(double scalar) {
+
+    }
+
+    public FeatureVector pow(FeatureVector other) {
+        return null;
+    }
+
     public FeatureVector pow(int scalar) {
         return null;
     }
 
-    @Override
     public FeatureVector pow(double scalar) {
         return null;
     }
 
-    @Override
+    public void powInPlace(FeatureVector other) {
+
+    }
+
+    public void powInPlace(double scalar) {
+
+    }
+
     public double sum() {
-        return 0;
+        int sum = 0;
+        for (double val : this)
+            sum += val;
+        return sum;
     }
 
     @Override
     public double product() {
-        return 0;
+        double product = 0.0;
+        for (double val : this)
+            product *= val;
+        return product;
     }
 
     @Override
-    public int getLength() {
+    public int size() {
         return vector.length;
     }
 
@@ -170,12 +222,12 @@ public class SparseFeatureVector implements FeatureVector {
 
     public CompressedFeatureVector compress() {
         Map<Integer, Double> nonZeroIndices = new HashMap<>();
-        for (int i = 0; i < getLength(); i++) {
+        for (int i = 0; i < this.size(); i++) {
             double value = get(i);
             if (value != 0)
                 nonZeroIndices.put(i, value);
         }
-        return new CompressedFeatureVector(getLength(), nonZeroIndices);
+        return new CompressedFeatureVector(this.size(), nonZeroIndices);
     }
 
     @Override
@@ -192,8 +244,67 @@ public class SparseFeatureVector implements FeatureVector {
         return vector;
     }
 
+    @Override
+    public boolean isEmpty() {
+        return size() == 0;
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        return false;
+    }
+
     public Iterator<Double> iterator() {
         List array = Arrays.asList(vector);
         return (Iterator<Double>) array.iterator();
+    }
+
+    @Override
+    public Object[] toArray() {
+        Object[] asObject = new Object[size()];
+        for (int i = 0; i < size(); i++)
+            asObject[i] = get(i);
+        return asObject;
+    }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        T[] asGeneric = new T[size()];
+        return (T[]) vector;
+    }
+
+    @Override
+    public boolean add(Double aDouble) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean remove(Object o) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        return false;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends Double> c) {
+        return false;
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        return false;
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        return false;
+    }
+
+    @Override
+    public void clear() {
+
     }
 }

@@ -167,7 +167,7 @@ public class CompressedFeatureVector implements FeatureVector {
     }
 
     @Override
-    public int getLength() {
+    public int size() {
         return length;
     }
 
@@ -206,7 +206,7 @@ public class CompressedFeatureVector implements FeatureVector {
 
     public void update(CompressedFeatureVector other) {
         indexMap = other.indexMap;
-        length = other.getLength();
+        length = other.size();
     }
 
     @Override
@@ -242,7 +242,7 @@ private class CompressedIterator implements Iterator<Double> {
 
     @Override
     public boolean hasNext() {
-        return currentIndex < vector.getLength();
+        return currentIndex < vector.size();
     }
 
     @Override
