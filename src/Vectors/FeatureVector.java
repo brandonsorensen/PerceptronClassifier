@@ -7,7 +7,14 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
     private double[] vector;
 
     /**
-     * Initializes an empty vector of a given length.
+     * Initializes an empty vector.
+     */
+    FeatureVector() {
+        vector = new double[0];
+    }
+
+    /**
+     * Initializes a vector containing all zeros of a given length.
      * @param length the length of the vector
      */
     FeatureVector(int length) {
@@ -232,6 +239,12 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
         return vector;
     }
 
+    public void zero() {
+        for (int i = 0; i < size(); i++) {
+            vector[i] = 0.0;
+        }
+    }
+
     @Override
     public boolean isEmpty() { return size() == 0; }
 
@@ -297,8 +310,11 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Resets all elements in the vector to zero.
+     */
     @Override
     public void clear() {
-        throw new UnsupportedOperationException();
+        zero();
     }
 }
