@@ -1,6 +1,8 @@
 package Vectors;
 
-interface FeatureVector {
+import java.util.Iterator;
+
+interface FeatureVector extends Iterator<Double> {
 
     /**
      * Calculates the inner dot product of two <code>FeatureVector</code> objects.
@@ -73,5 +75,7 @@ interface FeatureVector {
     boolean isCompressed();
 
     void update(FeatureVector other);
+
+    Iterator<Double> iterator();
 
 }
