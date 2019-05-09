@@ -11,7 +11,7 @@ public class CompressedFeatureVector implements FeatureVector {
     private int length;
 
     CompressedFeatureVector(int length) {
-        this(length, new HashMap<Integer, Double>());
+        this(length, new HashMap<>());
     }
 
     CompressedFeatureVector(int length, Map<Integer, Double> indexMap) {
@@ -193,7 +193,7 @@ public class CompressedFeatureVector implements FeatureVector {
     }
 
     public SparseFeatureVector sparsify() {
-        return null;
+        return new SparseFeatureVector(getVector());
     }
 
     @Override
@@ -204,17 +204,31 @@ public class CompressedFeatureVector implements FeatureVector {
 
     }
 
-    public Set<Integer> nonZeros() {
-        return indexMap.keySet();
+    public void update(CompressedFeatureVector other) {
+        indexMap = other.indexMap;
+        length = other.getLength();
     }
 
     @Override
     public Iterator<Double> iterator() {
-        return null;
+        return new CompressedIterator(this);
     }
-}
 
-class CompressedIterator implements Iterator<Double> {
+    @Override
+    public double[] getVector() {
+        double[] vector = new double[length];
+        Iterator<Double> iter = iterator();
+        for (int i=0; i < length; i++) {
+            vector[i] = iter.next();
+        }
+        return vector;
+    }
+
+    public Set<Integer> nonZeros() {
+        return indexMap.keySet();
+    }
+
+private class CompressedIterator implements Iterator<Double> {
 
     private CompressedFeatureVector vector;
     private Set<Integer> nonZeroIndices;

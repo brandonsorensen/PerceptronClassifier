@@ -1,8 +1,8 @@
 package Vectors;
-
+import java.lang.Iterable;
 import java.util.Iterator;
 
-interface FeatureVector extends Iterator<Double> {
+interface FeatureVector extends Iterable<Double> {
 
     /**
      * Calculates the inner dot product of two <code>FeatureVector</code> objects.
@@ -77,5 +77,7 @@ interface FeatureVector extends Iterator<Double> {
     void update(FeatureVector other);
 
     Iterator<Double> iterator();
+
+    public double[] getVector();
 
 }

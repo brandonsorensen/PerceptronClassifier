@@ -1,54 +1,80 @@
 package Vectors;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class SparseFeatureVector implements FeatureVector {
-    @Override
-    public double dot(FeatureVector other) {
-        return 0;
+
+    private double[] vector;
+
+    /**
+     * Initializes an empty vector of a given length.
+     * @param length the length of the vector
+     */
+    SparseFeatureVector(int length) {
+        vector = new double[length];
     }
 
-    @Override
-    public double cosineSimilarity(FeatureVector other) {
-        return 0;
+    SparseFeatureVector(List<Double> vector) {
+        this.vector = new double[vector.size()];
+        for (int i = 0; i < vector.size(); i++)
+            this.vector[i] = vector.get(i);
+    }
+
+    SparseFeatureVector(double[] vector) {
+        this.vector = vector;
     }
 
     @Override
     public FeatureVector add(CompressedFeatureVector other) {
-        return null;
+        return other.add(this);
     }
 
     @Override
     public FeatureVector add(SparseFeatureVector other) {
-        return null;
+        double[] retVector = new double[getLength()];
+        for (int i = 0; i < getLength(); i++)
+            retVector[i] = this.get(i) +  other.get(i);
+        return new SparseFeatureVector(retVector);
     }
 
     @Override
     public FeatureVector add(int scalar) {
-        return null;
+        return add((double) scalar);
     }
 
     @Override
     public FeatureVector add(double scalar) {
-        return null;
+        double[] retVector = new double[getLength()];
+        for (int i = 0; i < getLength(); i++)
+            retVector[i] = this.get(i) + scalar;
+        return new SparseFeatureVector(retVector);
+    }
+
+    public FeatureVector subtract(FeatureVector other) {
+        double[] retVector = new double[getLength()];
+        for (int i = 0; i < getLength(); i++)
+            retVector[i] = this.get(i) - other.get(i);
+        return new SparseFeatureVector(retVector);
     }
 
     @Override
     public FeatureVector subtract(CompressedFeatureVector other) {
-        return null;
+        return subtract((FeatureVector) other);
     }
 
     @Override
     public FeatureVector subtract(SparseFeatureVector other) {
-        return null;
+        return subtract((FeatureVector) other);
     }
 
     @Override
     public FeatureVector subtract(int scalar) {
-        return null;
+        return add(-scalar);
     }
 
     @Override
     public FeatureVector subtract(double scalar) {
-        return null;
+        return add(-scalar);
     }
 
     @Override
@@ -113,7 +139,7 @@ public class SparseFeatureVector implements FeatureVector {
 
     @Override
     public int getLength() {
-        return 0;
+        return vector.length;
     }
 
     @Override
@@ -131,6 +157,16 @@ public class SparseFeatureVector implements FeatureVector {
         return null;
     }
 
+    public CompressedFeatureVector compressed() {
+        Map<Integer, Double> nonZeroIndices = new HashMap<>();
+        for (int i = 0; i < getLength(); i++) {
+            double value = get(i);
+            if (value != 0)
+                nonZeroIndices.put(i, value);
+        }
+        return new CompressedFeatureVector(getLength(), nonZeroIndices);
+    }
+
     @Override
     public boolean isCompressed() {
         return false;
@@ -138,6 +174,15 @@ public class SparseFeatureVector implements FeatureVector {
 
     @Override
     public void update(FeatureVector other) {
+        vector = other.getVector();
+    }
 
+    public double[] getVector() {
+        return vector;
+    }
+
+    public Iterator<Double> iterator() {
+        List array = Arrays.asList(vector);
+        return (Iterator<Double>) array.iterator();
     }
 }
