@@ -37,9 +37,15 @@ public class FeatureVector implements Collection<Double>, Iterable<Double> {
      * @return the cosine similarity of this and another vector
      */
     double cosineSimilarity(FeatureVector other) {
-        double dotProduct = dot(other);
-        double euclideanLengthA = pow(2).sum();
-        double euclideanLengthB = other.pow(2).sum();
+        double dotProduct = 0.0, euclideanLengthA = 0.0, euclideanLengthB = 0.0;
+        for (int i = 0; i < size(); i++) {
+            double thisValue = get(i);
+            double otherValue = other.get(i);
+
+            dotProduct += thisValue * otherValue;
+            euclideanLengthA += Math.pow(thisValue, 2);
+            euclideanLengthB += Math.pow(otherValue, 2);
+        }
 
         return dotProduct / (Math.sqrt(euclideanLengthA) * Math.sqrt(euclideanLengthB));
     }
