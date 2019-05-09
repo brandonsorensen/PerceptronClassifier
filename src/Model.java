@@ -1,12 +1,13 @@
 import Evaluation.Scores;
-import Vectors.FeatureVector;
+import Vectors.FeatureMatrix;
+
 import java.util.List;
 
 public interface Model {
 
-    public void fit(List<FeatureVector> inputs, List targets);
+    public void fit(FeatureMatrix inputs, List targets);
 
-    public double[] predict(List<FeatureVector> inputs);
+    public double[] predict(FeatureMatrix inputs);
 
     public Scores validate(List targets);
 
