@@ -1,8 +1,9 @@
 package Vectors;
 import java.lang.Iterable;
+import java.util.Collection;
 import java.util.Iterator;
 
-interface FeatureVector extends Iterable<Double> {
+interface FeatureVector extends Collection<Double>, Iterable<Double> {
 
     /**
      * Calculates the inner dot product of two <code>FeatureVector</code> objects.
@@ -24,41 +25,85 @@ interface FeatureVector extends Iterable<Double> {
         return dotProduct / (Math.sqrt(euclideanLengthA) * Math.sqrt(euclideanLengthB));
     }
 
-    FeatureVector add(CompressedFeatureVector other);
+    FeatureVector addition(FeatureVector other);
 
-    FeatureVector add(SparseFeatureVector other);
+    default FeatureVector addition(int scalar) {
+        return addition((double) scalar);
+    }
 
-    FeatureVector add(int scalar);
+    FeatureVector addition(double scalar);
 
-    FeatureVector add(double scalar);
+    void additionInPlace(FeatureVector other);
 
-    FeatureVector subtract(CompressedFeatureVector other);
+    default void additionInPlace(int scalar) {
+        addition((double) scalar);
+    }
 
-    FeatureVector subtract(SparseFeatureVector other);
+    void additionInPlace (double scalar);
 
-    FeatureVector subtract(int scalar);
+    FeatureVector subtract(FeatureVector other);
+
+    default FeatureVector subtract(int scalar) {
+        return subtract((double) scalar);
+    }
 
     FeatureVector subtract(double scalar);
 
-    FeatureVector multiply(CompressedFeatureVector other);
+    void subtractInPlace(FeatureVector other);
 
-    FeatureVector multiply(SparseFeatureVector other);
+    default void subtractInPlace(int scalar) {
+        subtractInPlace((double) scalar);
+    }
 
-    FeatureVector multiply(int scalar);
+    void subtractInPlace(double scalar);
+
+    FeatureVector multiply(FeatureVector other);
+
+    default FeatureVector multiply(int scalar) {
+        return multiply((double) scalar);
+    }
 
     FeatureVector multiply(double scalar);
 
-    FeatureVector divide(CompressedFeatureVector other);
+    void multiplyInPlace(FeatureVector other);
 
-    FeatureVector divide(SparseFeatureVector other);
+    default void multiplyInPlace(int scalar) {
+        multiplyInPlace((double) scalar);
+    }
 
-    FeatureVector divide(int scalar);
+    void multiplyInPlace(double scalar);
+
+    FeatureVector divide(FeatureVector other);
+
+    default FeatureVector divide(int scalar) {
+        return divide((double) scalar);
+    }
 
     FeatureVector divide(double scalar);
 
-    FeatureVector pow(int scalar);
+    void divideInPlace(FeatureVector other);
+
+    default void divideInPlace(int scalar) {
+        divideInPlace((double) scalar);
+    }
+
+    void divideInPlace(double scalar);
+
+    FeatureVector pow(FeatureVector other);
+
+    default FeatureVector pow(int scalar) {
+        return pow((double) scalar);
+    }
 
     FeatureVector pow(double scalar);
+
+    void powInPlace(FeatureVector other);
+
+    default void powInPlace(int scalar) {
+        powInPlace((double) scalar);
+    }
+
+    void powInPlace(double scalar);
 
     double sum();
 
