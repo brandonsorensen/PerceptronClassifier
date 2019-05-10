@@ -2,15 +2,16 @@ package Vectors;
 
 import java.util.*;
 
-abstract class FeatureVector extends AbstractCollection<Double> implements Iterable<Double> {
+abstract public class FeatureVector extends AbstractCollection<Double> implements Iterable<Double> {
     private boolean isCompressed;
+
     /**
      * Calculates the cosine similarity of two vectors.
      *
      * @param other another vector
      * @return the cosine similarity of this and another vector
      */
-    double cosineSimilarity(FeatureVector other) {
+    public double cosineSimilarity(FeatureVector other) {
         double dotProduct = 0.0, euclideanLengthA = 0.0, euclideanLengthB = 0.0;
         for (int i = 0; i < size(); i++) {
             double thisValue = get(i);
@@ -29,7 +30,7 @@ abstract class FeatureVector extends AbstractCollection<Double> implements Itera
      * @param other another vector
      * @return the dot product of the two vectors
      */
-    double dot(FeatureVector other) {
+    public double dot(FeatureVector other) {
         checkVectorSize(other);
         double dotProduct = 0.0;
         for (int i = 0; i < this.size(); i++)
@@ -37,110 +38,110 @@ abstract class FeatureVector extends AbstractCollection<Double> implements Itera
         return dotProduct;
     }
 
-    void checkVectorSize(FeatureVector other) {
+    public void checkVectorSize(FeatureVector other) {
         if (other.size() != size()) {
             throw new IllegalArgumentException("Vectors are not of equal lengths");
         }
     }
 
-    void additionInPlace(FeatureVector other) {
+    public void additionInPlace(FeatureVector other) {
         checkVectorSize(other);
         for (int i = 0; i < size(); i++)
             set(i, get(i) + other.get(i));
     }
 
-    void additionInPlace(int scalar) {
+    public void additionInPlace(int scalar) {
         additionInPlace((double) scalar);
     }
 
-    void additionInPlace(double scalar) {
+    public void additionInPlace(double scalar) {
         for (int i = 0; i < size(); i++)
             set(i, get(i) + scalar);
     }
 
-    abstract FeatureVector addition(FeatureVector other);
+    public abstract FeatureVector addition(FeatureVector other);
 
-    FeatureVector addition(int scalar) {
+    public FeatureVector addition(int scalar) {
         return addition((double) scalar);
     }
 
-    abstract FeatureVector addition(double scalar);
+    public abstract FeatureVector addition(double scalar);
 
-    abstract FeatureVector subtract(FeatureVector other);
+    public abstract FeatureVector subtract(FeatureVector other);
 
-    FeatureVector subtract(int scalar) {
+    public FeatureVector subtract(int scalar) {
         return subtract((double) scalar);
     }
 
-    FeatureVector subtract(double scalar) {
+    public FeatureVector subtract(double scalar) {
         return addition(-scalar);
     }
 
-    void subtractInPlace(FeatureVector other) {
+    public void subtractInPlace(FeatureVector other) {
         checkVectorSize(other);
         for (int i = 0; i < size(); i++)
             set(i, get(i) - other.get(i));
     }
 
-    void subtractInPlace(int scalar) {
+    public void subtractInPlace(int scalar) {
         subtract((double) scalar);
     }
 
-    void subtractInPlace(double scalar) {
+    public void subtractInPlace(double scalar) {
         additionInPlace(-scalar);
     }
 
-    abstract FeatureVector multiply(FeatureVector other);
+    public abstract FeatureVector multiply(FeatureVector other);
 
-    FeatureVector multiply(int scalar) {
+    public FeatureVector multiply(int scalar) {
         return multiply((double) scalar);
     }
 
-    abstract FeatureVector multiply(double scalar);
+    public abstract FeatureVector multiply(double scalar);
 
-    void multiplyInPlace(FeatureVector other) {
+    public void multiplyInPlace(FeatureVector other) {
         checkVectorSize(other);
         for (int i = 0; i < size(); i++)
             set(i, get(i) * other.get(i));
     }
 
-    void multiplyInPlace(double scalar) {
+    public void multiplyInPlace(double scalar) {
         for (int i = 0; i < size(); i++)
             set(i, get(i) * scalar);
     }
 
-    abstract FeatureVector divide(FeatureVector other);
+    public abstract FeatureVector divide(FeatureVector other);
 
-    FeatureVector divide(int scalar) {
+    public FeatureVector divide(int scalar) {
         return divide((double) scalar);
     }
 
-    abstract FeatureVector divide(double scalar);
+    public abstract FeatureVector divide(double scalar);
 
-    void divideInPlace(FeatureVector other) {
+    public void divideInPlace(FeatureVector other) {
         checkVectorSize(other);
         for (int i = 0; i < size(); i++)
             set(i, get(i) / other.get(i));
     }
 
-    void divideInPlace(int scalar) {
+    public void divideInPlace(int scalar) {
         divideInPlace((double) scalar);
     }
 
-    void divideInPlace(double scalar) {
+    public void divideInPlace(double scalar) {
         for (int i = 0; i < size(); i++)
             set(i, get(i) / scalar);
     }
 
-    abstract FeatureVector pow(FeatureVector other);
+    public abstract FeatureVector pow(FeatureVector other);
 
-    FeatureVector pow(int scalar) {
+    public FeatureVector pow(int scalar) {
         return pow((double) scalar);
     }
 
-    abstract FeatureVector pow(double scalar);
+    public abstract FeatureVector pow(double scalar);
 
-    void powInPlace(FeatureVector other) {
+    public void powInPlace(FeatureVector other) {
         for (int i = 0; i < size(); i++)
             set(i, Math.pow(get(i), other.get(i)));
     }
@@ -149,11 +150,11 @@ abstract class FeatureVector extends AbstractCollection<Double> implements Itera
      * Takes every dimension of the vector to the power of a given value
      * @param scalar a given scalar
      */
-    void powInPlace(int scalar) {
+    public void powInPlace(int scalar) {
         powInPlace((double) scalar);
     }
 
-    void powInPlace(double scalar) {
+    public void powInPlace(double scalar) {
         for (int i = 0; i < size(); i++)
             set(i, Math.pow(get(i), scalar));
     }
@@ -162,7 +163,7 @@ abstract class FeatureVector extends AbstractCollection<Double> implements Itera
      * Gets the sum of all the values in the vector
      * @return the sum of all the values in the vector.
      */
-    double sum() {
+    public double sum() {
         int sum = 0;
         for (double val : this)
             sum += val;
@@ -173,7 +174,7 @@ abstract class FeatureVector extends AbstractCollection<Double> implements Itera
      * Gets the inner product of the vector
      * @return the inner product of the vector
      */
-    double product() {
+    public double product() {
         double product = 0.0;
         for (double val : this)
             product *= val;
@@ -183,12 +184,12 @@ abstract class FeatureVector extends AbstractCollection<Double> implements Itera
     /**
      * Sets all elements to zero.
      */
-    void zero() {
+    public void zero() {
         for (int i = 0; i < size(); i++)
             set(i, 0);
     }
 
-    List<Double> nonZeroValues() {
+    public List<Double> nonZeroValues() {
         LinkedList<Double> retVal = new LinkedList<>();
         for (double val : this)
             if (val != 0.0)
@@ -200,7 +201,7 @@ abstract class FeatureVector extends AbstractCollection<Double> implements Itera
      * Returns all indices at which the value is not zero
      * @return all indices at which the value is not zero
      */
-    List<Integer> nonZeroIndices() {
+    public List<Integer> nonZeroIndices() {
         LinkedList<Integer> retVal = new LinkedList<>();
         for (int i = 0; i < size(); i++) {
             if (get(i) != 0)
@@ -214,33 +215,33 @@ abstract class FeatureVector extends AbstractCollection<Double> implements Itera
      * @param index the given index
      * @return the value at a given index
      */
-    abstract double get(int index);
+    public abstract double get(int index);
 
     /**
      * Sets the value at a given index.
      * @param index the index to change
      * @param val the value to update index
      */
-    abstract void set(int index, double val);
+    public abstract void set(int index, double val);
 
     /**
      * Returns a <code>CompressedFeatureVector</code> if the current feature of
      * type <code>SparseFeatureVector</code> and vice versa.
      * @return
      */
-    abstract FeatureVector changeState();
+    public abstract FeatureVector changeState();
 
     /**
      * Updates the values of this vector to match those of another.
      * @param other another <code>SparseFeatureVector</code>
      */
-    abstract void update(FeatureVector other);
+    public abstract void update(FeatureVector other);
 
     /**
      * Whether the vector is compressed or sparse.
      * @return whether the vector is compressed or sparse.
      */
-    boolean isCompressed() {
+    public boolean isCompressed() {
         return isCompressed;
     }
 
@@ -248,10 +249,10 @@ abstract class FeatureVector extends AbstractCollection<Double> implements Itera
      * Gets the internal array of the vector.
      * @return the internal double array of the vector.
      */
-    abstract double[] getVector();
+    public abstract double[] getVector();
 
     @Override
-    abstract public Iterator<Double> iterator();
+    public abstract Iterator<Double> iterator();
 
     @Override
     public void clear() {
