@@ -1,3 +1,5 @@
+package Models;
+
 import Evaluation.Scores;
 import Vectors.FeatureMatrix;
 
