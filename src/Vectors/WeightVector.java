@@ -33,5 +33,19 @@ public class WeightVector extends SparseFeatureVector {
         this.bias = bias;
     }
 
+    public double getBias() {
+        return bias;
+    }
 
+    public void setBias(double bias) {
+        this.bias = bias;
+    }
+
+    public static WeightVector randomInitialize(int length, double bias) {
+        double[] randArray = new double[length];
+        for (int i = 0; i < length; i++)
+            randArray[i] = Math.random();
+        return new WeightVector(randArray, bias);
+    }
+}
 }
