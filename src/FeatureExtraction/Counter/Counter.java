@@ -1,6 +1,6 @@
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
+package FeatureExtraction.Counter;
+
+import java.util.*;
 import java.util.Map.Entry;
 
 public class Counter<K> implements Iterable<Entry<K, Integer>> {
@@ -26,14 +26,22 @@ public class Counter<K> implements Iterable<Entry<K, Integer>> {
         update(arr);
     }
 
+    public Counter(Iterable<K[]> c) {
+        this();
+        updateAll(c);
+    }
+
     public void add(K element) {
         if (counter.containsKey(element))
             counter.put(element, counter.get(element) + 1);
+        else
+            counter.put(element, 1);
     }
 
-    public void update(Iterable<K> c) {
-        for (K elem : c)
+    public void update(Collection<K> c) {
+        for (K elem : c) {
             add(elem);
+        }
     }
 
     public void update(K[] arr) {
@@ -41,12 +49,29 @@ public class Counter<K> implements Iterable<Entry<K, Integer>> {
             add(elem);
     }
 
+    public void updateAll(Iterable<K[]> c) {
+        for (K[] arr : c) {
+            update(arr);
+        }
+    }
+
+    public int get(K key) {
+        if (counter.containsKey(key))
+            return counter.get(key);
+        return 0;
+    }
+
     @Override
     public Iterator<Entry<K, Integer>> iterator() {
         return counter.entrySet().iterator();
     }
 
+    public Set<K> vocab() {
+        return counter.keySet();
+    }
+
     public int size() {
         return counter.size();
     }
+
 }
