@@ -1,19 +1,53 @@
 package FeatureExtraction;
 
+import Vectors.CompressedFeatureVector;
 import Vectors.FeatureVector;
+
+import java.util.*;
 
 /**
  * A bag-of-words feature extractor.
  */
 public class BOWExtractor implements FeatureExtractor {
 
+    private HashMap<String, Integer> word2Idx;
+
+    BOWExtractor(Iterable<String[]> dataPoints) {
+        Set<String> vocab = getAllWords(dataPoints);
+        initWord2Idx(vocab);
+    }
+
+    private void initWord2Idx(Set<String> vocab) {
+        word2Idx = new HashMap<>(vocab.size());
+        int index = 0;
+        for (String word : vocab) {
+            word2Idx.put(word, index);
+            index++;
+        }
+    }
+
+    static Set<String> getAllWords(Iterable<String[]> collection) {
+        HashSet<String> vocab = new HashSet<>();
+        for (String[] tokens : collection) {
+            for (String token : tokens) {
+                vocab.add(token);
+            }
+        }
+        return vocab;
+    }
+
     @Override
     public FeatureVector vectorize(String[] tokens) {
-        return null;
+        HashMap<Integer, Double> indexMap = new HashMap<>();
+        for (String token : tokens) {
+            if (word2Idx.keySet().contains(token))
+                indexMap.put(word2Idx.get(token), 1.0);
+        }
+        return new CompressedFeatureVector(featureCount(), indexMap);
     }
 
     @Override
     public int featureCount() {
-        return 0;
+        return word2Idx.size();
     }
 }
