@@ -1,5 +1,6 @@
 package Vectors;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * A compressed implementation of the <code>FeatureVector</code> interface.
@@ -8,22 +9,22 @@ import java.util.*;
  * for vectors that are at all sparse. It also significantly speeds up vector multiplication
  * on sparse vectors.
  */
-public class CompressedFeatureVector implements FeatureVector {
+public class CompressedFeatureVector extends FeatureVector {
 
     private Map<Integer, Double> indexMap;
     private int length;
     private boolean isCompressed = true;
 
-    CompressedFeatureVector(int length) {
+    public CompressedFeatureVector(int length) {
         this(length, new HashMap<>());
     }
 
-    CompressedFeatureVector(int length, Map<Integer, Double> indexMap) {
+    public CompressedFeatureVector(int length, Map<Integer, Double> indexMap) {
         this.length = length;
         this.indexMap = indexMap;
     }
 
-    CompressedFeatureVector(double[] vector) {
+    public CompressedFeatureVector(double[] vector) {
         HashMap<Integer, Double> index = new HashMap<>();
         this.length = vector.length;
 
@@ -35,7 +36,7 @@ public class CompressedFeatureVector implements FeatureVector {
         this.indexMap = index;
     }
 
-    CompressedFeatureVector(List<Double> vector) {
+    public CompressedFeatureVector(List<Double> vector) {
         HashMap<Integer, Double> index = new HashMap<>();
         this.length = vector.size();
 
@@ -185,9 +186,6 @@ public class CompressedFeatureVector implements FeatureVector {
     }
 
     @Override
-    public boolean isCompressed() { return true; }
-
-    @Override
     public void update(FeatureVector other) {
         for (int i = 0; i < size(); i++) {
             double val = other.get(i);
@@ -204,20 +202,6 @@ public class CompressedFeatureVector implements FeatureVector {
     @Override
     public Iterator<Double> iterator() {
         return new CompressedIterator(this);
-    }
-
-    @Override
-    public Object[] toArray() {
-        return new Object[0];
-    }
-
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        for (Object o : c) {
-            if (!contains(o))
-                return false;
-        }
-        return true;
     }
 
     @Override
@@ -245,6 +229,22 @@ public class CompressedFeatureVector implements FeatureVector {
     @Override
     public void zero() {
         indexMap = new HashMap<>();
+    }
+
+    public static CompressedFeatureVector randomInitialize(int length, double sparsity) {
+        if (sparsity < 0 || sparsity > 1)
+            throw new IllegalArgumentException("sparsity must be between 0 and 1");
+
+        int numNonZero = (int) (1 - sparsity) * length;
+        HashMap<Integer, Double> randIndices = new HashMap<>();
+        for (int i = 0; i < numNonZero; i++) {
+            int randomIndex = ThreadLocalRandom.current().nextInt(0, length);
+            double randValue = Math.random();
+            while (!randIndices.containsKey(randomIndex))
+                randomIndex = ThreadLocalRandom.current().nextInt(0, length);
+            randIndices.put(randomIndex, randValue);
+        }
+        return new CompressedFeatureVector(length, randIndices);
     }
 
     private class CompressedIterator implements Iterator<Double> {
