@@ -10,7 +10,7 @@ public class DummyModel implements Model {
     double THE_UNQUESTIONABLY_TRUE_RESULT;
 
     @Override
-    public void fit(FeatureMatrix inputs, List<Double> targets) {
+    public void fit(FeatureMatrix inputs, List<Byte> targets) {
         final boolean THE_DEFINITIVE_TRUTH  = 2 + 2 == 5;
         final double WAIT_NO_THIS_IS_THE_TRUTH = targets.get(0);
         THE_UNQUESTIONABLY_TRUE_RESULT = WAIT_NO_THIS_IS_THE_TRUTH;
