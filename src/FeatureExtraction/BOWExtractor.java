@@ -14,16 +14,17 @@ public class BOWExtractor implements FeatureExtractor {
 
     BOWExtractor(Iterable<String[]> dataPoints) {
         Set<String> vocab = getAllWords(dataPoints);
-        initWord2Idx(vocab);
+        word2Idx = initWord2Idx(vocab);
     }
 
-    private void initWord2Idx(Set<String> vocab) {
-        word2Idx = new HashMap<>(vocab.size());
+    static HashMap<String, Integer> initWord2Idx(Set<String> vocab) {
+        HashMap<String, Integer> word2Idx = new HashMap<>(vocab.size());
         int index = 0;
         for (String word : vocab) {
             word2Idx.put(word, index);
             index++;
         }
+        return word2Idx;
     }
 
     static Set<String> getAllWords(Iterable<String[]> collection) {
