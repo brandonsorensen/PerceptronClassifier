@@ -2,6 +2,7 @@ package Vectors;
 
 import java.util.*;
 
+// TODO: Extend serializable?
 public class FeatureMatrix extends AbstractCollection<FeatureVector> {
     private FeatureVector[] matrix;
     private final int[] shape;
@@ -153,7 +154,7 @@ public class FeatureMatrix extends AbstractCollection<FeatureVector> {
     }
 }
 
-class VectorLengthException extends Exception {
+class VectorLengthException extends RuntimeException {
     VectorLengthException(String message) {
         super(message);
     }
