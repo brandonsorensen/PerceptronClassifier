@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface Model {
 
-    public void fit(FeatureMatrix inputs, List targets);
+    public void fit(FeatureMatrix inputs, List<Byte> targets);
 
     public double[] predict(FeatureMatrix inputs);
 
