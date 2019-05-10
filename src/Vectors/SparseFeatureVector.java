@@ -1,33 +1,26 @@
 package Vectors;
 import java.util.*;
 
-// TODO: Does it make sense to inherit from Collection?
-public class SparseFeatureVector implements FeatureVector {
+public class SparseFeatureVector extends FeatureVector {
 
     private double[] vector;
-
-    /**
-     * Initializes an empty vector.
-     */
-    SparseFeatureVector() {
-        vector = new double[0];
-    }
+    private final boolean isCompressed = false;
 
     /**
      * Initializes a vector containing all zeros of a given length.
      * @param length the length of the vector
      */
-    SparseFeatureVector(int length) {
+    public SparseFeatureVector(int length) {
         vector = new double[length];
     }
 
-    SparseFeatureVector(List<Double> vector) {
+    public SparseFeatureVector(List<Double> vector) {
         this.vector = new double[vector.size()];
         for (int i = 0; i < vector.size(); i++)
             this.vector[i] = vector.get(i);
     }
 
-    SparseFeatureVector(double[] vector) {
+    public SparseFeatureVector(double[] vector) {
         this.vector = vector;
     }
 
@@ -151,11 +144,6 @@ public class SparseFeatureVector implements FeatureVector {
         return new CompressedFeatureVector(this.size(), nonZeroIndices);
     }
 
-    public boolean isCompressed() {
-        return false;
-    }
-
-
     public void update(FeatureVector other) {
         vector = other.getVector();
     }
@@ -185,47 +173,6 @@ public class SparseFeatureVector implements FeatureVector {
     public Iterator<Double> iterator() {
         List array = Arrays.asList(vector);
         return (Iterator<Double>) array.iterator();
-    }
-
-    @Override
-    public Object[] toArray() {
-        Object[] asObject = new Object[size()];
-        for (int i = 0; i < size(); i++)
-            asObject[i] = get(i);
-        return asObject;
-    }
-
-    @Override
-    public <T> T[] toArray(T[] a) {
-        T[] asGeneric = new T[size()];
-        return (T[]) vector;
-    }
-
-    @Override
-    public boolean add(Double aDouble) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean remove(Object o) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        for (Object elem : c) {
-            if (!contains(elem))
-                return false;
-        }
-        return true;
-    }
-
-    /**
-     * Resets all elements in the vector to zero.
-     */
-    @Override
-    public void clear() {
-        zero();
     }
 
     public static SparseFeatureVector randomInitialize(int length) {

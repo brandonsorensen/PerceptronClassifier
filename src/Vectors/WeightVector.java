@@ -48,4 +48,3 @@ public class WeightVector extends SparseFeatureVector {
         return new WeightVector(randArray, bias);
     }
 }
-}

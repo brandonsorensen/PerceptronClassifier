@@ -13,7 +13,7 @@ public class CompressedFeatureVector extends FeatureVector {
 
     private Map<Integer, Double> indexMap;
     private int length;
-    private boolean isCompressed = true;
+    private final boolean isCompressed = true;
 
     public CompressedFeatureVector(int length) {
         this(length, new HashMap<>());
@@ -50,6 +50,7 @@ public class CompressedFeatureVector extends FeatureVector {
 
     @Override
     public double dot(FeatureVector other) {
+        checkVectorSize(other);
         double dotProduct = 0.0;
 
         for (int index : indexMap.keySet()) {
@@ -61,17 +62,20 @@ public class CompressedFeatureVector extends FeatureVector {
 
     @Override
     public CompressedFeatureVector addition(FeatureVector other) {
+        checkVectorSize(other);
         HashMap<Integer, Double> retMap = new HashMap<>();
         for (int i = 0; i < this.size(); i++)
             retMap.put(i, this.get(i) + other.get(i));
         return new CompressedFeatureVector(length, retMap);
     }
 
+    // TODO
     @Override
     public FeatureVector addition(double scalar) {
         return null;
     }
 
+    // TODO
     @Override
     public FeatureVector subtract(FeatureVector other) {
         return null;
@@ -79,6 +83,7 @@ public class CompressedFeatureVector extends FeatureVector {
 
     @Override
     public CompressedFeatureVector multiply(FeatureVector other) {
+        checkVectorSize(other);
         HashMap<Integer, Double> updatedIndexMap = new HashMap<>();
         for (Map.Entry<Integer, Double> pair : indexMap.entrySet()) {
             int index = pair.getKey();
@@ -95,6 +100,16 @@ public class CompressedFeatureVector extends FeatureVector {
             updatedIndexMap.put(pair.getKey(), pair.getValue() * scalar);
         }
         return new CompressedFeatureVector(length, updatedIndexMap);
+    }
+
+    @Override
+    public void multiplyInPlace(FeatureVector other) {
+        checkVectorSize(other);
+        for (Map.Entry<Integer, Double> pair: indexMap.entrySet()) {
+            int index = pair.getKey();
+            double value = pair.getValue();
+            set(index, value * other.get(index));
+        }
     }
 
     @Override
@@ -235,12 +250,12 @@ public class CompressedFeatureVector extends FeatureVector {
         if (sparsity < 0 || sparsity > 1)
             throw new IllegalArgumentException("sparsity must be between 0 and 1");
 
-        int numNonZero = (int) (1 - sparsity) * length;
+        int numNonZero = (int) ((1 - sparsity) * length);
         HashMap<Integer, Double> randIndices = new HashMap<>();
         for (int i = 0; i < numNonZero; i++) {
             int randomIndex = ThreadLocalRandom.current().nextInt(0, length);
             double randValue = Math.random();
-            while (!randIndices.containsKey(randomIndex))
+            while (randIndices.containsKey(randomIndex))
                 randomIndex = ThreadLocalRandom.current().nextInt(0, length);
             randIndices.put(randomIndex, randValue);
         }

@@ -2,12 +2,18 @@ package Vectors;
 
 import java.util.*;
 
-abstract public class FeatureVector extends AbstractCollection<Double> implements Iterable<Double> {
+/**
+ * An unmodifiable, iterable collection that represents a vector of features for use
+ * in a machine learning context. Being unmodifiable, it offers no way to add or remove
+ * elements from a collection. The <code>clear</code> method, contrary to the typical
+ * behavior of an unmodifiable collection, sets all values in the vector to zero and
+ * is as such indistinguishable from the <code>zero</code> method.
+ */
+abstract public class FeatureVector extends AbstractCollection<Double> {
     private boolean isCompressed;
 
     /**
      * Calculates the cosine similarity of two vectors.
-     *
      * @param other another vector
      * @return the cosine similarity of this and another vector
      */
