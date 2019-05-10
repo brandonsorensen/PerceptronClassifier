@@ -36,4 +36,36 @@ public class Perceptron implements Model {
     public Scores validate(List targets) {
         return null;
     }
+
+    public double getLr() {
+        return lr;
+    }
+
+    public void setLr(double lr) {
+        this.lr = lr;
+    }
+
+    public double getTheta() {
+        return theta;
+    }
+
+    public void setTheta(double theta) {
+        this.theta = theta;
+    }
+
+    public int getnFeatures() {
+        return nFeatures;
+    }
+
+    public void setnFeatures(int nFeatures) {
+        this.nFeatures = nFeatures;
+    }
+
+    public FeatureMatrix getWeights() {
+        return weights;
+    }
+
+    public void setWeights(FeatureMatrix weights) {
+        this.weights = weights;
+    }
 }
