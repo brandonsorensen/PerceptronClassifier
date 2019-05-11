@@ -5,9 +5,10 @@ import Vectors.FeatureMatrix;
 import Vectors.FeatureVector;
 import Vectors.WeightVector;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class Perceptron implements Model {
+public class Perceptron implements Model<Byte> {
 
     private double lr, theta;
     private int nFeatures;
@@ -16,16 +17,16 @@ public class Perceptron implements Model {
 
     private final int DEFAULT_NUM_ITER = 5;
 
-    public Perceptron(double lr, double theta, int nFeatures, WeightVector weights) {
-        this.lr = lr;
-        this.theta = theta;
-        this.nFeatures = nFeatures;
+    public Perceptron(double lr, double theta, WeightVector weights) {
+        this(lr, theta, weights.size());
         this.weights = weights;
-        this.nIter = DEFAULT_NUM_ITER;
     }
 
     public Perceptron(double lr, double theta, int nFeatures) {
-        this(lr, theta, nFeatures, null);
+        this.lr = lr;
+        this.theta = theta;
+        this.nFeatures = nFeatures;
+        this.nIter = DEFAULT_NUM_ITER;
     }
 
     @Override
@@ -54,17 +55,16 @@ public class Perceptron implements Model {
     }
 
     public byte predictSingleInput(FeatureVector vector) {
-        if (vector.dot(weights) >= 0) return 1;
+        if (vector.dot(weights) + weights.getBias() >= 0) return 1;
         else return -1;
-
     }
 
     @Override
-    public double[] predict(FeatureMatrix inputs) {
-        double[] predictions = new double[inputs.size()];
+    public List<Byte> predict(FeatureMatrix inputs) {
+        List<Byte> predictions = new ArrayList<>(inputs.size());
         for (int i = 0; i < inputs.size(); i++) {
             FeatureVector input = inputs.get(i);
-            predictions[i] = predictSingleInput(input);
+            predictions.add(predictSingleInput(input));
         }
         return predictions;
     }
@@ -93,10 +93,6 @@ public class Perceptron implements Model {
 
     public int getnFeatures() {
         return nFeatures;
-    }
-
-    public void setnFeatures(int nFeatures) {
-        this.nFeatures = nFeatures;
     }
 
     public WeightVector getWeights() {
