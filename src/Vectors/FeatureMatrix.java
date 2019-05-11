@@ -115,6 +115,11 @@ public class FeatureMatrix extends AbstractCollection<FeatureVector> {
         return shape;
     }
 
+    @Override
+    public String toString() {
+        return Arrays.toString(matrix);
+    }
+
     /**
      * Initializes a <code>FeatureMatrix</code> object with random values of the shape
      * {nFeatures, length}. Uses the <code>SparseFeatureVector</code> implementation.
