@@ -6,8 +6,10 @@ import Vectors.FeatureVector;
 import Vectors.WeightVector;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
+// TODO Store class labels somehow
 public class Perceptron implements Model<Byte> {
 
     private double lr, theta;
@@ -32,7 +34,6 @@ public class Perceptron implements Model<Byte> {
     @Override
     public void fit(FeatureMatrix inputs, List<Byte> targets) {
         if (weights == null) {
-            int[] shape = inputs.getShape();
             weights = WeightVector.randomInitialize(nFeatures, theta);
         }
 
@@ -52,6 +53,28 @@ public class Perceptron implements Model<Byte> {
                 weights.setBias(weights.getBias() + update);
             }
         }
+    }
+
+    public void fitFromStrings(FeatureMatrix inputs, List<String> targets) {
+        fit(inputs, convertStringToByte(targets));
+    }
+
+    private List<Byte> convertStringToByte(List<String> strings) {
+        if (strings.size() < 1)
+            throw new IllegalArgumentException("Container is empty");
+        String primaryClass = strings.get(0);   // arbitrarily choose first element
+        HashSet<String> labelSet = new HashSet<>(strings);
+        List<Byte> retList = new ArrayList<>(strings.size());
+
+        if (labelSet.size() != 2)
+            throw new IllegalArgumentException("More than two classes in label set");
+
+        byte positive = 1, negative = -1;
+        for (String s : strings) {
+            if (s.equals(primaryClass)) retList.add(positive);
+            else retList.add(negative);
+        }
+        return retList;
     }
 
     public byte predictSingleInput(FeatureVector vector) {
