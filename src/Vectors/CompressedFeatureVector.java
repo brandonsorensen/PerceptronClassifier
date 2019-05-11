@@ -238,6 +238,7 @@ public class CompressedFeatureVector extends FeatureVector {
     public List<Integer> nonZeroIndices() {
         ArrayList<Integer> retArray = new ArrayList<>(indexMap.size());
         retArray.addAll(indexMap.keySet());
+        Collections.sort(retArray);
         return retArray;
     }
 

@@ -213,6 +213,7 @@ abstract public class FeatureVector extends AbstractCollection<Double> {
             if (get(i) != 0)
                 retVal.add(i);
         }
+        Collections.sort(retVal);
         return retVal;
     }
 
