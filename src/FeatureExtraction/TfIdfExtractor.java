@@ -46,7 +46,7 @@ public class TfIdfExtractor implements FeatureExtractor {
     private int[] mapToIndices(String[] tokens) {
         int[] retArray = new int[tokens.length];
         for (int i = 0; i < tokens.length; i++) {
-            retArray[i] = word2Idx.get(i);
+            retArray[i] = word2Idx.get(tokens[i]);
         }
         return retArray;
     }
