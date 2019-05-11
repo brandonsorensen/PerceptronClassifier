@@ -40,7 +40,7 @@ public class Perceptron implements Model {
         FeatureVector currentInput;
 
         for (int i = 0; i < nIter; i++) {
-            for (int j = 0; j < inputs.size(); i++) {
+            for (int j = 0; j < inputs.size(); j++) {
                 target = targets.get(i);
                 currentInput = inputs.get(i);
                 prediction = predictSingleInput(currentInput);
@@ -50,7 +50,6 @@ public class Perceptron implements Model {
                 weights.additionInPlace(currentInput);
                 weights.setBias(weights.getBias() + update);
             }
-
         }
     }
 
