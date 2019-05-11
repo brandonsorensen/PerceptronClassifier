@@ -44,7 +44,7 @@ public class ConfusionMatrix {
      * @return the model's precision
      */
     public double precision() {
-        if (tp == 0 || fp == 0)
+        if (tp == 0 && fp == 0)
             return 0.0;
         return (double) tp / (tp + fp);
     }
@@ -56,7 +56,7 @@ public class ConfusionMatrix {
      * @return the model's recall
      */
     public double recall() {
-        if (tp == 0 || fn == 0)
+        if (tp == 0 && fn == 0)
             return 0.0;
        return (double) tp / (tp + fn);
     }
@@ -164,6 +164,12 @@ public class ConfusionMatrix {
      */
     public void incrementFn() {
         this.fn++;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("ConfusionMatrix(precision: %.3f, recall: %.3f, f1-score: %.3f)",
+                precision(), recall(), fscore());
     }
 
     /**
