@@ -13,12 +13,14 @@ public class IsearDataLoader implements Iterator<DataPoint> {
             "joy", "fear", "shame", "disgust",
             "guilt", "anger", "sadness"
     };
+    private int length;
 
     public IsearDataLoader(String path) {
         validLabels = new HashSet<>();
         validLabels.addAll(Arrays.asList(EMOTIONS));
         List<DataPoint> data = readCSV(path);
         this.it = data.iterator();
+        length = data.size();
     }
 
     private List<DataPoint> readCSV(String path) {
@@ -37,7 +39,7 @@ public class IsearDataLoader implements Iterator<DataPoint> {
                 label = sample[0];
                 if (!validLabels.contains(label))
                     continue;
-                sample = sample[1].split(" ");
+                sample = sample[1].toLowerCase().split(" ");
                 DataPoint point = new DataPoint(label, sample);
                 allPoints.add(point);
             }
@@ -65,5 +67,9 @@ public class IsearDataLoader implements Iterator<DataPoint> {
     @Override
     public DataPoint next() {
         return it.next();
+    }
+
+    public int size() {
+        return length;
     }
 }
