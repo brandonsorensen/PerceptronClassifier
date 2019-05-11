@@ -36,4 +36,10 @@ public class Scores {
     public void setFscore(double fscore) {
         this.fscore = fscore;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Scores(precision: %.3f, recall: %.3f, f1-score: %.3f)",
+                precision, recall, fscore);
+    }
 }
