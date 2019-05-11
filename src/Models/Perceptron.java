@@ -13,9 +13,8 @@ import java.util.List;
 public class Perceptron implements Model<Byte> {
 
     private double lr, theta;
-    private int nFeatures;
+    private int nFeatures, nIter;
     private WeightVector weights;
-    private int nIter;
 
     private final int DEFAULT_NUM_ITER = 5;
 

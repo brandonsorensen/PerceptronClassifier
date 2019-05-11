@@ -35,6 +35,7 @@ public class DocumentCounter<K> extends Counter<K> {
             add(elem);
     }
 
+    @Override
     public void update(K[] arr) {
         Set<K> docSet = new HashSet<>();
         for (K elem : arr)
