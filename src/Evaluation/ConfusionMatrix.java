@@ -75,6 +75,13 @@ public class ConfusionMatrix {
         return 2 * ((p * r) / (p + r));
     }
 
+    public void add(ConfusionMatrix other) {
+        tp += other.getTp();
+        fp += other.getFp();
+        tn += other.getTn();
+        fn += other.getFn();
+    }
+
     /**
      * @return true positives
      */
