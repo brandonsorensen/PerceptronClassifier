@@ -12,7 +12,7 @@ public class BOWExtractor implements FeatureExtractor {
 
     private HashMap<String, Integer> word2Idx;
 
-    BOWExtractor(Iterable<String[]> dataPoints) {
+    public BOWExtractor(Iterable<String[]> dataPoints) {
         Set<String> vocab = getAllWords(dataPoints);
         word2Idx = initWord2Idx(vocab);
     }
